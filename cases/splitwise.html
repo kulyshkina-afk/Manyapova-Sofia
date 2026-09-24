@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Splitwise — разделение совместных трат · Маняпова Софья</title>
+  <link rel="stylesheet" href="https://static.tildacdn.com/css/fonts-tildasans.css" />
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+  <article class="case-page">
+    <div class="case-page__head">
+      <a class="back" href="../index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+        На&nbsp;главную
+      </a>
+    </div>
+
+    <div class="case-hero">
+      <p class="case-hero__eyebrow">Splitwise</p>
+      <h1>Улучшила сценарий разделения совместных трат</h1>
+    </div>
+
+    <div class="case-hero__media case-hero__media--bleed">
+      <img src="../assets/Main SplitWise.png" alt="Экраны приложения Splitwise" />
+    </div>
+
+    <div class="case-page__body">
+      <section>
+        <h2>Контекст</h2>
+        <div class="subblock">
+          <span class="tag">Продукт</span>
+          <p>Splitwise — это&nbsp;приложение для&nbsp;совместного учёта финансов. Оно создано, чтобы&nbsp;отслеживать общие расходы, делить счета и&nbsp;избавлять от&nbsp;неловких вопросов наподобие «кто кому сколько должен».</p>
+        </div>
+        <div class="subblock">
+          <span class="tag">Пользовательская проблема</span>
+          <p>При&nbsp;добавлении совместного расхода пользователю нужно указать несколько связанных параметров: общую сумму, участников, плательщиков и&nbsp;способ разделения. В&nbsp;текущем сценарии эти действия требуют много переходов, а&nbsp;интерфейс меняется в&nbsp;зависимости от&nbsp;количества участников. Пользователю не&nbsp;всегда очевидно, как&nbsp;именно будет распределена сумма и&nbsp;чем&nbsp;один способ разделения отличается от&nbsp;другого. Некоторые обозначения могут запутывать и&nbsp;требуют дополнительных объяснений.</p>
+        </div>
+        <div class="subblock">
+          <span class="tag">Проблема бизнеса</span>
+          <p>Для&nbsp;продукта важно успешное завершение ключевого сценария. Если&nbsp;пользователю сложно добавить расход или&nbsp;он&nbsp;не&nbsp;уверен в&nbsp;правильности расчёта, он&nbsp;может бросить сценарий и&nbsp;потерять доверие к&nbsp;сервису.</p>
+        </div>
+        <div class="subblock">
+          <span class="tag">Задача</span>
+          <p>Упростить сценарий внесения расходов и&nbsp;их&nbsp;разделения между участниками в&nbsp;мобильном приложении Splitwise.</p>
+        </div>
+      </section>
+
+      <section class="audit">
+        <div class="audit__inner">
+          <div class="audit__head">
+            <h2 class="audit__title">Аудит текущего решения<br />и&nbsp;поиск точек роста</h2>
+            <a class="audit__link" href="#">
+              Подробнее в&nbsp;Figma
+              <span class="audit__link-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" width="14" height="14"><path d="M7 17L17 7M9 7h8v8"/></svg>
+              </span>
+            </a>
+          </div>
+          <div class="audit__stage">
+            <img class="audit__phone audit__phone--1" src="../assets/IMG_6473%201.png" alt="Splitwise: экран группы Moscow Trip со списком трат" />
+            <img class="audit__phone audit__phone--2" src="../assets/IMG_6490%203.png" alt="Splitwise: экран добавления расхода" />
+            <img class="audit__phone audit__phone--3" src="../assets/IMG_6491%203.png" alt="Splitwise: экран выбора способа разделения" />
+            <img class="audit__phone audit__phone--4" src="../assets/IMG_6498%201.png" alt="Splitwise: экран деталей расхода для двух человек" />
+            <img class="audit__arrow audit__arrow--left" src="../assets/audit-arrow-left.svg" alt="" aria-hidden="true" />
+            <img class="audit__arrow audit__arrow--right" src="../assets/audit-arrow-right.svg" alt="" aria-hidden="true" />
+            <div class="audit__note audit__note--a"><span class="audit__avatar">S</span><p>Визуальный язык — плоский, местами неконсистентный и&nbsp;устаревший</p></div>
+            <div class="audit__note audit__note--b"><span class="audit__avatar">S</span><p>Интерфейс перегружен, сложно ориентироваться</p></div>
+            <div class="audit__note audit__note--c"><span class="audit__avatar">S</span><p>Очень много переходов, может можно сократить..</p></div>
+            <div class="audit__note audit__note--d"><span class="audit__avatar">S</span><p>Непоследовательный сценарий ключевого действия</p></div>
+            <div class="audit__note audit__note--e"><span class="audit__avatar">S</span><p>Интерфейс для&nbsp;2 человек отличается от&nbsp;3+</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Исследования</h2>
+        <div class="subblock">
+          <span class="tag">Что&nbsp;сделано</span>
+          <ol>
+            <li>Провела бенчмаркинг-анализ решений конкурентов. Это&nbsp;позволило выделить лучшие практики и&nbsp;определить зоны для&nbsp;улучшения.</li>
+            <li>Изучила открытые источники и&nbsp;пользовательские отзывы на&nbsp;тему совместных оплат у&nbsp;конкурентов. Анализ провела на&nbsp;основе данных Т-Банка, Compare the Market, UX-кейсов Splitwise и&nbsp;рыночных отчётов.</li>
+          </ol>
+        </div>
+        <div class="subblock">
+          <span class="tag">Основные результаты</span>
+          <ul>
+            <li>Нужны гибкость и&nbsp;прозрачность: разные способы сплита, мультивалютность, контроль за&nbsp;долгами и&nbsp;тратами.</li>
+            <li>Целевое действие (сплит) должно быть максимально простым и&nbsp;быстрым — без&nbsp;лишних переключений и&nbsp;ввода данных.</li>
+            <li>Интерфейс должен быть предсказуемым, структурированным и&nbsp;вызывающим доверие.</li>
+            <li>Нужна автоматизация и&nbsp;уменьшение количества переходов в&nbsp;другие приложения — например, встроенный калькулятор и&nbsp;интеграция с&nbsp;платёжными системами.</li>
+          </ul>
+        </div>
+        <div class="case-page__wide-image case-page__wide-image--contained">
+          <img src="../assets/research.png" alt="Доска исследования: бенчмаркинг конкурентов и&nbsp;анализ открытых источников" />
+        </div>
+      </section>
+
+      <section>
+        <h2>Интервью и&nbsp;UX-тесты</h2>
+        <div class="subblock">
+          <span class="tag">Цель исследования</span>
+          <ul>
+            <li>Узнать в&nbsp;целом про&nbsp;опыт разделения совместных счетов.</li>
+            <li>Увидеть, как&nbsp;пользователи проходят путь в&nbsp;приложении: что&nbsp;нравится, что&nbsp;не&nbsp;нравится, где&nbsp;узкие места.</li>
+          </ul>
+        </div>
+        <div class="subblock">
+          <span class="tag">Вопросы для&nbsp;интервью</span>
+          <ul>
+            <li>Был ли&nbsp;опыт разделения счетов? Как&nbsp;происходило, как&nbsp;скидывались?</li>
+            <li>Какие были сложности, проблемы?</li>
+            <li>Пользовались приложениями? Если&nbsp;да, то&nbsp;какими?</li>
+            <li>Задание: в&nbsp;приложении Splitwise создать общую трату на&nbsp;2–3 человек, например 5000&nbsp;руб., и&nbsp;поделить на&nbsp;всех.</li>
+            <li>Спросить обо&nbsp;всех ощущениях в&nbsp;приложении: что&nbsp;нравится, что&nbsp;не&nbsp;нравится, как&nbsp;воспринимаются обозначения.</li>
+          </ul>
+        </div>
+        <div class="case-page__wide-image case-page__wide-image--contained">
+          <img src="../assets/interview.png" alt="Таблица результатов интервью с&nbsp;респондентами" />
+        </div>
+      </section>
+
+      <section>
+        <h2>Подход к&nbsp;редизайну</h2>
+        <p>Находки аудита и&nbsp;исследования охватывали не&nbsp;отдельные баги, а&nbsp;системную проблему — интерфейс не&nbsp;поддерживал ключевую цель приложения: прозрачность и&nbsp;лёгкость совместных трат. Точечные правки не&nbsp;решили бы это полностью, поэтому редизайн начала не&nbsp;с&nbsp;отдельных экранов, а&nbsp;с&nbsp;пересборки визуальной основы, на&nbsp;которой держится всё остальное.</p>
+        <div class="panel panel--after-text">
+          <img src="../assets/splitwise-concept.png" alt="Концепт визуала: тёмная тема как доступность и маскот, который снижает эмоциональное напряжение вокруг долгов" />
+        </div>
+      </section>
+
+    </div>
+
+    <div class="problems">
+      <section class="problem">
+        <div class="problem__top">
+          <div class="problem__text">
+            <p class="problem__eyebrow">Проблема 1</p>
+            <h2 class="problem__title">Различия между способами деления не&nbsp;сразу считывались</h2>
+            <ul class="problem__list">
+              <li>
+                <img class="problem__emoji" src="../assets/emoji-thinking.png" alt="" />
+                <span>Способы деления счёта были представлены избыточно: декоративные иконки-персонажи, иконки и&nbsp;лишние пояснения на&nbsp;каждый вариант. Пользователи не&nbsp;могли на&nbsp;глаз определить назначение варианта и&nbsp;тратили время на&nbsp;расшифровку того, что&nbsp;должно считываться мгновенно.</span>
+              </li>
+              <li>
+                <img class="problem__emoji" src="../assets/emoji-flushed.png" alt="" />
+                <span>Обозначения способа ручного ввода суммы («1.23») пользователи путали с&nbsp;обозначением доли.</span>
+              </li>
+            </ul>
+          </div>
+          <div class="problem__hypotheses">
+            <p class="hypothesis"><strong>Гипотеза 1.</strong> Если&nbsp;заменить иконки на&nbsp;понятные текстовые названия, пользователь выберет нужный способ без&nbsp;расшифровки.</p>
+            <p class="hypothesis"><strong>Гипотеза 2.</strong> Если&nbsp;убрать лишние описания и&nbsp;оставить только необходимое, пользователям станет проще сравнивать варианты между собой.</p>
+            <p class="hypothesis"><strong>Гипотеза 3.</strong> Если&nbsp;сократить количество способов до&nbsp;самых используемых, пользователям станет проще выбирать нужную опцию.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <img src="../assets/splitwise-p1-split.png" alt="Экран сплита: убрала лишние пояснения, которые загромождали интерфейс, и сократила способы сплита до трёх самых популярных" />
+        </div>
+      </section>
+
+      <section class="problem">
+        <div class="problem__top">
+          <div class="problem__text">
+            <p class="problem__eyebrow">Проблема 2</p>
+            <h2 class="problem__title">Основной сценарий добавления траты был перегружен</h2>
+            <ul class="problem__list">
+              <li>
+                <img class="problem__emoji" src="../assets/emoji-thinking.png" alt="" />
+                <span>Кнопки создания траты вручную и&nbsp;сканирования чека воспринимались как&nbsp;две разные, не&nbsp;связанные между собой функции, хотя вели к&nbsp;одному результату.</span>
+              </li>
+              <li>
+                <img class="problem__emoji" src="../assets/emoji-pensive.png" alt="" />
+                <span>При&nbsp;оплате счёта несколькими людьми не&nbsp;было нативной поддержки — пользователи вручную создавали отдельные траты и&nbsp;пересчитывали суммы, что&nbsp;повышало риск ошибки.</span>
+              </li>
+              <li>
+                <img class="problem__emoji" src="../assets/emoji-confused.png" alt="" />
+                <span>Форма содержала нефункциональные и&nbsp;второстепенные элементы, отвлекающие от&nbsp;основного действия.</span>
+              </li>
+            </ul>
+          </div>
+          <div class="problem__hypotheses">
+            <p class="hypothesis"><strong>Гипотеза 1.</strong> Если&nbsp;объединить способы добавления в&nbsp;единую точку входа с&nbsp;меню, пользователь будет считывать их&nbsp;как альтернативы одного действия, а&nbsp;не&nbsp;отдельные функции.</p>
+            <p class="hypothesis"><strong>Гипотеза 2.</strong> Если&nbsp;добавить поддержку нескольких плательщиков, то&nbsp;ручной пересчёт и&nbsp;риск ошибки исчезнут.</p>
+            <p class="hypothesis"><strong>Гипотеза 3.</strong> Если&nbsp;разгрузить страницу и&nbsp;собрать форму с&nbsp;учётом привычных паттернов, ввод траты будет ощущаться быстрее и&nbsp;понятнее, снижая когнитивную нагрузку у&nbsp;пользователей.</p>
+            <p class="hypothesis"><strong>Гипотеза 4.</strong> Если&nbsp;встроить калькулятор в&nbsp;клавиатуру, пользователю не&nbsp;придётся переключаться в&nbsp;другое приложение для&nbsp;расчётов — это&nbsp;уберёт лишний выход из&nbsp;флоу.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <img src="../assets/splitwise-p2-form.png" alt="Экран добавления расхода: разгрузила страницу, добавила графы «Расходы» и «Переводы», встроила калькулятор в клавиатуру" />
+        </div>
+
+        <div class="panel">
+          <img src="../assets/splitwise-p2-payers.png" alt="Сценарий нескольких плательщиков: функция избавляет от ручных пересчётов и снижает риск ошибок" />
+        </div>
+      </section>
+
+      <section class="problem">
+        <div class="problem__top">
+          <div class="problem__text">
+            <p class="problem__eyebrow">Проблема 3</p>
+            <h2 class="problem__title">Скрытый лимит бесплатных трат</h2>
+            <ul class="problem__list">
+              <li>
+                <img class="problem__emoji" src="../assets/emoji-confused.png" alt="" />
+                <span>Дневной лимит бесплатных трат нигде не&nbsp;отображался заранее — блокировка с&nbsp;промо-экраном подписки появлялась внезапно, в&nbsp;момент попытки добавить трату, что&nbsp;ощущалось как&nbsp;неприятный сюрприз, а&nbsp;не&nbsp;понятное ограничение тарифа.</span>
+              </li>
+            </ul>
+          </div>
+          <div class="problem__hypotheses">
+            <p class="hypothesis hypothesis--tilt-right"><strong>Гипотеза 1.</strong> Если&nbsp;показывать счётчик оставшихся трат заранее — до&nbsp;момента блокировки, пользователь будет понимать ограничение тарифа и&nbsp;не&nbsp;столкнётся с&nbsp;неожиданным прерыванием задачи.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <img src="../assets/splitwise-p3-limit.png" alt="Решение: добавила счётчик оставшихся бесплатных операций прямо в меню создания трат; когда лимит исчерпан, на главном экране группы отображается сообщение" />
+        </div>
+      </section>
+
+      <section class="problem">
+        <div class="problem__top">
+          <div class="problem__text">
+            <p class="problem__eyebrow">Проблема 4</p>
+            <h2 class="problem__title">Интерфейс не&nbsp;снижает эмоциональную и&nbsp;когнитивную нагрузку при&nbsp;управлении долгами</h2>
+            <ul class="problem__list">
+              <li>
+                <img class="problem__emoji" src="../assets/emoji-confused.png" alt="" />
+                <span>Пользователям психологически некомфортно напоминать другим о&nbsp;долге — это&nbsp;одна из&nbsp;ключевых эмоциональных болей в&nbsp;сценарии совместных трат.</span>
+              </li>
+              <li>
+                <img class="problem__emoji" src="../assets/emoji-pensive.png" alt="" />
+                <span>Проблемы с&nbsp;иерархией: финансовые показатели — ключевая ценность приложения — визуально не&nbsp;выделялись среди второстепенных элементов управления.</span>
+              </li>
+            </ul>
+          </div>
+          <div class="problem__hypotheses">
+            <p class="hypothesis"><strong>Гипотеза 1.</strong> Если&nbsp;сделать функцию напоминания о&nbsp;долге более заметной, понятной и&nbsp;удобной, пользователям будет проще решаться отправить напоминание, а&nbsp;эмоциональный дискомфорт при&nbsp;просьбе вернуть деньги снизится.</p>
+            <p class="hypothesis"><strong>Гипотеза 2.</strong> Если&nbsp;визуально выделить ключевые финансовые показатели, пользователю будет проще быстро понять свою финансовую ситуацию и&nbsp;решить, что&nbsp;делать дальше.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <img src="../assets/splitwise-p4-groups.png" alt="Группы: ключевая сводка по финансам вынесена на главный экран, второстепенные функции убраны в меню-троеточие" />
+        </div>
+
+        <div class="panel">
+          <img src="../assets/splitwise-p4-balance.png" alt="Баланс: функция напоминания о долге размещена на экране баланса и доступна в один клик" />
+        </div>
+      </section>
+
+      <section class="problem">
+        <div class="problem__top">
+          <div class="problem__text">
+            <p class="problem__eyebrow">Проблема 5</p>
+            <h2 class="problem__title">Непрозрачный процесс сканирования чека</h2>
+            <ul class="problem__list">
+              <li>
+                <img class="problem__emoji" src="../assets/emoji-thinking.png" alt="" />
+                <span>После сканирования чека результат распознавания не&nbsp;давал пользователю понятного пути проверки и&nbsp;правок.</span>
+              </li>
+              <li>
+                <img class="problem__emoji" src="../assets/emoji-pensive.png" alt="" />
+                <span>Не&nbsp;было видно прогресса при&nbsp;загрузке и&nbsp;обработке чека — не&nbsp;было ясно, сколько продлится загрузка.</span>
+              </li>
+            </ul>
+          </div>
+          <div class="problem__hypotheses">
+            <p class="hypothesis"><strong>Гипотеза 1.</strong> Если&nbsp;сделать весь путь от&nbsp;скана до&nbsp;распределения явным — с&nbsp;отдельным шагом проверки, редактирования и&nbsp;распределения по&nbsp;позициям между участниками — пользователь будет доверять результату и&nbsp;сможет исправить ошибки распознавания без&nbsp;путаницы.</p>
+            <p class="hypothesis"><strong>Гипотеза 2.</strong> Если&nbsp;показать индикатор прогресса при&nbsp;обработке чека, пользователь будет уверен, что&nbsp;процесс идёт, и&nbsp;не&nbsp;станет прерывать его повторными действиями.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <img src="../assets/splitwise-p5-scan.png" alt="Добавление по чеку: сканируем, проверяем и редактируем, распределяем, корректируем (купон, чаевые, скидки)" />
+        </div>
+      </section>
+    </div>
+
+    <div class="case-page__body">
+      <section>
+        <h2>А&nbsp;что&nbsp;дальше?</h2>
+        <ul>
+          <li>Тестируем новый интерфейс на&nbsp;пользователях.</li>
+          <li>Оцениваем изменение метрик — ожидаем рост DAU, retention, завершаемости сценария добавления расхода, CSAT и&nbsp;снижение времени на&nbsp;выполнение задач.</li>
+          <li>Собираем обратную связь — анализируем отзывы в&nbsp;поддержке и&nbsp;соцсетях, выявляем неочевидные проблемы.</li>
+          <li>Исследуем следующие шаги. Планируем расширение функционала: например, интеграцию встроенного платежа.</li>
+        </ul>
+      </section>
+    </div>
+    <nav class="case-nav">
+      <a class="case-nav__link" href="../index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" aria-hidden="true">
+          <path d="M19 12H5M11 18l-6-6 6-6"/>
+        </svg>
+        Назад в&nbsp;портфолио
+      </a>
+      <a class="case-nav__link" href="conference.html">
+        Следующий кейс
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6"/>
+        </svg>
+      </a>
+    </nav>
+  </article>
+
+  <footer class="contacts">
+    <div class="contacts__photo">
+      <img src="../assets/me.png" alt="" />
+    </div>
+    <h2 class="contacts__title">Давайте знакомиться!</h2>
+    <a class="contacts__btn" href="https://t.me/SofiaManyapova" target="_blank" rel="noopener">Написать в&nbsp;Telegram</a>
+    <p class="contacts__mail">или на&nbsp;почту <a href="mailto:kulyshkina@gmail.com">kulyshkina@gmail.com</a></p>
+  </footer>
+</body>
+</html>

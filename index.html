@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Маняпова Софья — Продуктовый дизайнер</title>
+  <meta name="description" content="Портфолио продуктового дизайнера Маняповой Софьи. UX/UI, веб- и мобильный дизайн." />
+  <link rel="stylesheet" href="https://static.tildacdn.com/css/fonts-tildasans.css" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="home">
+  <div class="bg">
+    <video
+      class="bg__video"
+      src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260329_050842_be71947f-f16e-4a14-810c-06e83d23ddb5.mp4"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+    ></video>
+  </div>
+
+  <header class="topbar">
+    <div class="clock" aria-label="Время в Санкт-Петербурге">
+      <time class="clock__time" data-clock>--:--</time>
+      <span class="clock__divider" aria-hidden="true"></span>
+      <span class="clock__place">Санкт-Петербург<br />GMT +3</span>
+    </div>
+    <div class="topbar__contacts">
+      <button class="social-btn social-btn--icon-end" type="button" data-copy-email="kulyshkina@gmail.com" aria-label="Скопировать email kulyshkina@gmail.com">
+        <span data-copy-label>Email</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
+          <rect x="9" y="9" width="12" height="12" rx="2"/>
+          <path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/>
+        </svg>
+      </button>
+      <a class="social-btn" href="https://www.linkedin.com/" target="_blank" rel="noopener">
+        LinkedIn
+      </a>
+      <a class="social-btn" href="https://t.me/SofiaManyapova" target="_blank" rel="noopener">
+        Telegram
+      </a>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="profile glass">
+      <div class="profile__photo" aria-hidden="true">
+        <img src="assets/me.png" alt="" onerror="this.style.display='none'" />
+      </div>
+      <h1 class="profile__name">Маняпова Софья</h1>
+      <p class="profile__tagline">Продуктовый дизайнер с&nbsp;опытом 2+&nbsp;года из&nbsp;<span class="nowrap">Санкт-Петербурга</span></p>
+      <div class="profile__actions">
+        <a class="btn btn--ghost" href="#experience">Опыт работы</a>
+      </div>
+    </aside>
+
+    <section class="cases">
+      <div class="cases__row cases__row--top">
+        <a class="card card--wide" href="cases/splitwise.html">
+          <h2 class="card__title">Улучшила сценарий разделения<br>совместных трат</h2>
+          <img class="card__art card__art--eyes" src="assets/Frame%202131328383.png" alt="" />
+          <img class="card__art card__art--phone" src="assets/Group%202087325979.png" alt="" />
+        </a>
+
+        <div class="card card--wide card--disabled card--migration-soon">
+          <h2 class="card__title">Продумала мини-апп для&nbsp;комфортной миграции данных</h2>
+          <div class="card__soon">
+            <svg class="card__soon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="28" height="28" aria-hidden="true">
+              <circle cx="12" cy="12" r="9"/>
+              <path d="M12 7v5l3.5 2"/>
+            </svg>
+            <span class="card__soon-text">Кейс в&nbsp;процессе<br />оформления</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cases__row cases__row--bottom">
+        <a class="card card--tall" href="cases/yandex-360.html">
+          <h2 class="card__title">Оптимизировала работу поддержки: новый интерфейс админки</h2>
+          <img class="card__art card__art--interface" src="assets/%D0%A1%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0%20%D0%B7%D0%B0%D1%8F%D0%B2%D0%BA%D0%B8_%D0%B0%D0%B2%D1%82%D0%BE%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7.png" alt="" />
+        </a>
+
+        <a class="card card--tall card--square" href="cases/conference.html">
+          <h2 class="card__title">Спроектировала промо-лендинг для&nbsp;всероссийской конференции СПбГУ и&nbsp;фонда Потанина</h2>
+          <img class="card__art card__art--badge" src="assets/conference-card-badge.png" alt="" />
+        </a>
+
+        <a class="card card--resume card--square glass" href="https://disk.yandex.ru/" target="_blank" rel="noopener">
+          <div class="card__resume-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="28" height="28">
+              <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/>
+              <path d="M14 3v5h5"/>
+              <path d="M9 13h6M9 17h4"/>
+            </svg>
+          </div>
+          <span class="card__resume-title">Посмотреть<br />резюме</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <div class="drawer-overlay" id="experienceOverlay"></div>
+  <aside class="drawer" id="experienceDrawer" aria-hidden="true">
+    <div class="drawer__header">
+      <div class="drawer__title-group">
+        <h2 class="drawer__title">Опыт работы</h2>
+        <span class="drawer__duration">2&nbsp;г 3&nbsp;мес</span>
+      </div>
+      <button class="drawer__close" id="experienceClose" aria-label="Закрыть">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="drawer__body">
+      <article class="job">
+        <div class="job__period">июл 2025 — настоящее время</div>
+        <h3 class="job__company">Дизайн-студия Юзли</h3>
+        <a class="job__link" href="https://yuzli.ru/" target="_blank" rel="noopener">yuzli.ru</a>
+        <p class="job__role">UX/UI и&nbsp;коммуникационный дизайнер</p>
+
+        <div class="job__project">
+          <h4 class="job__project-title">Всероссийская конференция от&nbsp;СПбГУ и&nbsp;фонда Потанина</h4>
+          <ul>
+            <li>Спроектировала информационную архитектуру и&nbsp;UX/UI промо-лендинга с&nbsp;нуля для&nbsp;всероссийской конференции от&nbsp;СПбГУ и&nbsp;фонда Потанина. Переработала большой объём неструктурированных данных в&nbsp;понятный пользовательский путь, обеспечив удобную регистрацию и&nbsp;онбординг для&nbsp;200+ участников конференции.</li>
+            <li>Разработала масштабируемую систему гайдлайнов: адаптировала айдентику на&nbsp;50+ форматов (web, полиграфия, мерч), сохранив консистентность бренда на&nbsp;всех точках контакта.</li>
+            <li>Оптимизировала процесс подготовки спикеров, создав универсальный UI-kit для&nbsp;презентаций (5+ мастер-макетов, 40+ готовых паттернов слайдов), что&nbsp;сократило время на&nbsp;сборку материалов.</li>
+          </ul>
+        </div>
+
+        <div class="job__project">
+          <h4 class="job__project-title">Зоогостиница и&nbsp;клиника Rabbits Hotel &amp; Hospital</h4>
+          <ul>
+            <li>Разработала просветительский сайт Rabbits Friendly как&nbsp;новый канал привлечения клиентов для&nbsp;зоогостиницы и&nbsp;клиники Rabbits Hotel &amp; Hospital.</li>
+            <li>Оформление соцсетей помогло привлечь новую аудиторию: прирост подписчиков 20+ каждый месяц в&nbsp;течение полутора лет.</li>
+            <li>Создала полную экосистему бренда: логотип, визуалы для&nbsp;соцсетей и&nbsp;пакет офлайн-носителей. Единый стиль укрепил узнаваемость и&nbsp;экспертность. Визуальное обновление обеспечило прирост клиентской базы на&nbsp;50%.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="job">
+        <div class="job__period">июл 2024 — ноя 2025</div>
+        <h3 class="job__company">ООО «Медиа Гавань» <span class="job__badge">в&nbsp;ТОП-10 студий рунета</span></h3>
+        <a class="job__link" href="https://media-bay.ru/" target="_blank" rel="noopener">media-bay.ru</a>
+        <p class="job__role">UX/UI и&nbsp;коммуникационный дизайнер</p>
+        <ul>
+          <li>UX-аудит и&nbsp;редизайн интернет-магазина антиквариата: переработала интерфейс, упростив сценарий покупки и&nbsp;обновив визуальный стиль, что&nbsp;привело к&nbsp;росту конверсии в&nbsp;покупку.</li>
+          <li>Проектировала пользовательские сценарии для&nbsp;продуктов в&nbsp;разных нишах (e-commerce, B2B, сервисы), что&nbsp;ускорило запуск проектов.</li>
+          <li>На&nbsp;этапе пресейла разрабатывала low-fi прототипы и&nbsp;вариативные визуальные концепции для&nbsp;8+ проектов, обеспечивая заказчикам наглядную визуализацию продукта и&nbsp;ускоряя принятие решений на&nbsp;ранних стадиях.</li>
+        </ul>
+      </article>
+    </div>
+  </aside>
+
+  <script src="experience-drawer.js"></script>
+  <script src="clock.js"></script>
+</body>
+</html>

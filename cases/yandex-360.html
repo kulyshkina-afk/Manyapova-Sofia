@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Яндекс 360 — админка поддержки · Маняпова Софья</title>
+  <link rel="stylesheet" href="https://static.tildacdn.com/css/fonts-tildasans.css" />
+  <link rel="stylesheet" href="../styles.css" />
+</head>
+<body>
+  <article class="case-page">
+    <div class="case-page__head">
+      <a class="back" href="../index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" aria-hidden="true">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+        На&nbsp;главную
+      </a>
+    </div>
+
+    <div class="case-hero">
+      <p class="case-hero__eyebrow">Яндекс 360 (тестовое задание)</p>
+      <h1>Оптимизация работы поддержки: новый интерфейс админки</h1>
+    </div>
+
+    <div class="case-hero__media">
+      <img src="../assets/yandex-hero.png" alt="Новый интерфейс страницы заявки в админке поддержки Яндекс 360 с блоком автоанализа обращения" />
+    </div>
+
+    <div class="case-page__body">
+      <section>
+        <h2>Контекст</h2>
+        <div class="subblock">
+          <span class="tag">Продукт</span>
+          <p>Сотрудникам поддержки Яндекс 360 для&nbsp;решения обращений пользователей часто приходится искать информацию в&nbsp;нескольких админках разных сервисов. Каждая админка содержит данные только своего сервиса, поэтому для&nbsp;получения полной картины о&nbsp;пользователе приходится переключаться между ними.</p>
+        </div>
+        <div class="subblock">
+          <span class="tag">Проблема</span>
+          <p>Из-за необходимости работать в&nbsp;нескольких админках увеличивается время обработки обращений, особенно в&nbsp;межсервисных сценариях.</p>
+        </div>
+        <div class="subblock">
+          <span class="tag">Задача</span>
+          <p class="list-intro">Спроектировать страницу в&nbsp;админке по&nbsp;пользователю, которая поможет сотруднику быстро получить общую информацию о&nbsp;пользователе по&nbsp;сервисам Яндекс 360. Интерфейс должен помогать:</p>
+          <ul>
+            <li>сформировать представление о&nbsp;пользователе;</li>
+            <li>оценить использование сервисов пользователем;</li>
+            <li>понимать контекст последних обращений в&nbsp;поддержку;</li>
+            <li>уменьшить количество переходов в&nbsp;другие админки.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="admin-showcase">
+        <h2 class="admin-showcase__title">Текущая админка сотрудника</h2>
+        <div class="admin-showcase__grid">
+          <img src="../assets/yandex-current-1.png" alt="Текущая админка поддержки, экран 1" />
+          <img src="../assets/yandex-current-2.png" alt="Текущая админка поддержки, экран 2" />
+          <img src="../assets/yandex-current-3.png" alt="Текущая админка поддержки, экран 3" />
+          <img src="../assets/yandex-current-4.png" alt="Текущая админка поддержки, экран 4" />
+        </div>
+      </section>
+
+      <section>
+        <h2>Цели бизнеса и&nbsp;пользователя</h2>
+        <div class="subblock">
+          <span class="tag">Зачем бизнесу</span>
+          <p>Данное изменение интерфейса должно помочь снизить общие затраты на&nbsp;поддержку за&nbsp;счёт роста продуктивности сотрудников. А&nbsp;также помочь увеличить количество выполненных вовремя задач, уменьшить количество просроченных задач и&nbsp;увеличить удовлетворённость сотрудников.</p>
+        </div>
+        <div class="subblock">
+          <span class="tag">А&nbsp;пользователям</span>
+          <p>Главный пользователь — сотрудник поддержки Яндекс 360. Его ключевая задача — определить проблему и&nbsp;вынести решение.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Исследования</h2>
+        <div class="subblock">
+          <span class="tag">Что&nbsp;сделано</span>
+          <ul>
+            <li>Провела бенчмаркинг похожих сервисов (Jira, Zendesk, Яндекс Доски, Битрикс24) и&nbsp;отметила функционал.</li>
+            <li>Так как мне недоступны данные аналитики и&nbsp;интервью с&nbsp;респондентами, я&nbsp;проанализировала исследования из&nbsp;открытых источников по&nbsp;теме обработки заявок служб поддержки.</li>
+          </ul>
+        </div>
+        <div class="subblock">
+          <span class="tag">Основные результаты</span>
+          <ul>
+            <li>Переключения + рутина съедают до&nbsp;40–60% времени.</li>
+            <li>Канбан и&nbsp;ИИ ускоряют обработку заявок в&nbsp;несколько раз.</li>
+            <li>Скорость первого ответа = ключевой драйвер лояльности.</li>
+            <li>Доски лучше для&nbsp;визуального контроля статусов и&nbsp;загрузки, списки — для&nbsp;быстрого поиска и&nbsp;минимизации ошибок, поэтому интерфейс должен предлагать переключатель.</li>
+          </ul>
+          <a class="figma-link" href="https://www.figma.com/design/DkdDjgOow1uXSlbMMSFWkt/%D0%9C%D0%B0%D0%BD%D1%8F%D0%BF%D0%BE%D0%B2%D0%B0-%D0%A1._%D0%A2%D0%B5%D1%81%D1%82%D0%BE%D0%B2%D0%BE%D0%B5-%D0%AF%D0%BD%D0%B4%D0%B5%D0%BA%D1%81-360?node-id=123-28245&amp;t=5Cmm2V0qPtfnYOVT-1" target="_blank" rel="noopener">
+            Подробнее в&nbsp;Figma
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
+          </a>
+        </div>
+        <div class="case-page__wide-image case-page__wide-image--contained">
+          <img src="../assets/yandex-research.png" alt="Доски исследования: бенчмаркинг Jira, Битрикс24, Яндекс Досок и анализ данных из открытых источников" />
+        </div>
+        <div class="subblock">
+          <span class="tag">Гипотеза</span>
+          <p>Если мы спроектируем единый интерфейс, который адаптируется под&nbsp;тип обращения и&nbsp;автоматически анализирует проблему, то&nbsp;мы сократим среднее время обработки заявки и&nbsp;повысим удовлетворённость клиентов, так как сотрудник поддержки будет тратить время не&nbsp;на&nbsp;поиск параметров, а&nbsp;на&nbsp;принятие решения.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Новый сценарий</h2>
+        <p>Построила небольшую карту сценария, чтобы определить последовательность действий сотрудника поддержки при&nbsp;решении заявок.</p>
+        <div class="case-page__wide-image case-page__wide-image--contained">
+          <img src="../assets/yandex-scenario.png" alt="Карта нового сценария обработки заявки сотрудником поддержки" />
+        </div>
+      </section>
+
+      <section>
+        <h2>Результат</h2>
+        <div class="features">
+
+          <div class="feature">
+            <h3 class="fx fx-title" style="--x:4.33;--y:5.28;--w:33.25">Доска с&nbsp;задачами</h3>
+            <p class="fx fx-small" style="--x:51;--y:4.2;--w:46.42">(Так как нет данных о&nbsp;том, где&nbsp;сотрудники берут заявки в&nbsp;работу)</p>
+            <p class="fx fx-lead" style="--x:51;--y:14.53;--w:46.42">Спроектировала единую точку входа — так мы ускоряем обработку</p>
+            <p class="fx fx-note" style="--x:10;--y:22.19;--w:22.58">Новый раздел на&nbsp;сайдбаре</p>
+            <img class="fx fx--deco" style="--x:2.67;--y:20.48;--w:7.33;--r:-99deg" src="../assets/yandex-arrow-a.png" alt="" />
+            <img class="fx" style="--x:4.92;--y:32.76;--w:90.08" src="../assets/yandex-r-board.png" alt="Доска задач в новом разделе сайдбара" />
+          </div>
+
+          <div class="feature">
+            <h3 class="fx fx-title" style="--x:4.33;--y:5.28;--w:13.33">Задачи</h3>
+            <p class="fx fx-lead" style="--x:51;--y:6.21;--w:46.42">У&nbsp;задач выведены краткое саммери, дедлайн, сервис, номер и&nbsp;приоритет</p>
+            <p class="fx fx-note" style="--x:5.67;--y:27.21;--w:22.58">Дедлайн<br />уже близко!</p>
+            <p class="fx fx-note" style="--x:5.75;--y:39.5;--w:22.58">Пока можно<br />не&nbsp;переживать</p>
+            <p class="fx fx-note" style="--x:14.08;--y:67.9;--w:22.58">Низкий приоритет задачи</p>
+            <p class="fx fx-note" style="--x:16.17;--y:82.96;--w:22.58">Высокий приоритет</p>
+            <img class="fx fx--deco" style="--x:13.33;--y:19.68;--w:7.33;--r:-142deg" src="../assets/yandex-arrow-b.png" alt="" />
+            <img class="fx fx--deco" style="--x:13.83;--y:42.27;--w:7.33;--r:125deg" src="../assets/yandex-arrow-a.png" alt="" />
+            <img class="fx fx--deco" style="--x:17.75;--y:29.33;--w:11.67" src="../assets/yandex-r-deadline.png" alt="" />
+            <img class="fx" style="--x:35.5;--y:28.4;--w:64.5" src="../assets/yandex-r-tasks.png" alt="Карточки задач с номером, приоритетом, сервисом и дедлайном" />
+            <img class="fx fx--deco" style="--x:32.5;--y:75.83;--w:10.25;--r:-44deg" src="../assets/yandex-arrow-c.png" alt="" />
+            <img class="fx fx--deco" style="--x:32.75;--y:58.92;--w:10.25;--r:14deg" src="../assets/yandex-arrow-d.png" alt="" />
+          </div>
+
+          <div class="feature">
+            <h3 class="fx fx-title" style="--x:4.33;--y:5.28;--w:36">Управление доской</h3>
+            <p class="fx fx-note" style="--x:7.42;--y:28.53;--w:22.58">Переключение вида задач</p>
+            <p class="fx fx-note" style="--x:77.92;--y:27.48;--w:22.08">Фильтрация по&nbsp;сервисам</p>
+            <p class="fx fx-note" style="--x:56.33;--y:31.04;--w:20">Сортировка по:<br />— новизне<br />— приоритетности<br />— дедлайнам</p>
+            <p class="fx fx-note" style="--x:32.92;--y:36.06;--w:22.58">Поиск по&nbsp;задачам</p>
+            <img class="fx fx--deco" style="--x:87.17;--y:38.04;--w:7.33;--r:-77deg" src="../assets/yandex-arrow-b.png" alt="" />
+            <img class="fx fx--deco" style="--x:7.67;--y:37.65;--w:7.33;--r:-91deg" src="../assets/yandex-arrow-a.png" alt="" />
+            <img class="fx" style="--x:3.92;--y:52.58;--w:92.17" src="../assets/yandex-r-board-controls.png" alt="Панель управления доской: вид, поиск, сортировка и фильтр по сервисам" />
+            <img class="fx fx--deco" style="--x:41.42;--y:48.48;--w:10.25;--r:82deg" src="../assets/yandex-arrow-d.png" alt="" />
+            <img class="fx fx--deco" style="--x:62.17;--y:51.39;--w:10.25;--r:21deg" src="../assets/yandex-arrow-c.png" alt="" />
+          </div>
+
+          <div class="feature">
+            <h3 class="fx fx-title" style="--x:4.33;--y:5.28;--w:31.75">Страница заявки</h3>
+            <p class="fx fx-lead" style="--x:58.58;--y:6.21;--w:38.83">Единая точка для&nbsp;получения необходимых данных по&nbsp;заявке</p>
+            <img class="fx" style="--x:6.75;--y:24.97;--w:86.5" src="../assets/yandex-r-request.png" alt="Страница заявки со всеми данными по обращению" />
+          </div>
+
+          <div class="feature">
+            <h3 class="fx fx-title" style="--x:4.33;--y:5.15;--w:38.83">Контекст обращений</h3>
+            <p class="fx fx-note" style="--x:68.33;--y:10.57;--w:22.58">История обращений</p>
+            <p class="fx fx-note" style="--x:3.83;--y:34.48;--w:18.92">Тут полная информация от&nbsp;клиента по&nbsp;текущей заявке</p>
+            <img class="fx fx--deco" style="--x:77.67;--y:18.49;--w:7.33;--r:-77deg" src="../assets/yandex-arrow-b.png" alt="" />
+            <img class="fx fx--deco" style="--x:13.25;--y:47.56;--w:7.33;--r:-161deg" src="../assets/yandex-arrow-a.png" alt="" />
+            <img class="fx" style="--x:26;--y:31.57;--w:74" src="../assets/yandex-r-context.png" alt="Описание заявки от клиента и история его обращений" />
+          </div>
+
+          <div class="feature">
+            <h3 class="fx fx-title" style="--x:4.33;--y:5.28;--w:21.58">Автоанализ</h3>
+            <p class="fx fx-lead" style="--x:41.83;--y:6.21;--w:53.83">Система анализирует данные, даёт предварительный результат и&nbsp;предлагает решение</p>
+            <img class="fx" style="--x:0;--y:25.5;--w:14.08" src="../assets/yandex-r-auto-1.png" alt="Результат автоанализа" />
+            <img class="fx" style="--x:23.58;--y:24.97;--w:23.92;--r:-6deg" src="../assets/yandex-r-auto-2.png" alt="Форма автоанализа: найденная проблема и причина" />
+            <img class="fx" style="--x:43;--y:26.55;--w:23.92" src="../assets/yandex-r-auto-3.png" alt="Форма автоанализа: валидация и выбор действия" />
+            <img class="fx fx--deco" style="--x:73.25;--y:30.52;--w:0.58" src="../assets/yandex-r-auto-steps.png" alt="" />
+            <p class="fx fx-note" style="--x:75.75;--y:29.33;--w:14.25">Видим проблему или&nbsp;её&nbsp;отсутствие</p>
+            <p class="fx fx-note" style="--x:75.75;--y:39.89;--w:14.25">Видим причину</p>
+            <p class="fx fx-note" style="--x:75.75;--y:58.39;--w:21.17">Валидируем решение...</p>
+            <p class="fx fx-note" style="--x:75.75;--y:87.58;--w:19.25">Выбираем действие</p>
+          </div>
+
+          <div class="feature">
+            <h3 class="fx fx-title" style="--x:4.33;--y:5.15;--w:24.83;--lh:1.2">А&nbsp;если<br />не&nbsp;согласны?</h3>
+            <p class="fx fx-small" style="--x:4.42;--y:25.63;--w:26.58">Можем сами проверить необходимые параметры. Выведено только то, что&nbsp;требует задача</p>
+            <p class="fx fx-note" style="--x:12.42;--y:85.6;--w:22.58">Совмещённая история активностей по&nbsp;сервисам</p>
+            <img class="fx fx--deco" style="--x:22.67;--y:73.71;--w:7.33;--r:-176deg" src="../assets/yandex-arrow-b.png" alt="" />
+            <img class="fx" style="--x:33.92;--y:0;--w:66.08" src="../assets/yandex-r-disagree.png" alt="Ручная проверка параметров и совмещённая история активностей по сервисам" />
+          </div>
+
+          <div class="feature">
+            <h3 class="fx fx-title" style="--x:4.33;--y:5.15;--w:70.75;--lh:1.26">И&nbsp;формируем собственное решение</h3>
+            <img class="fx" style="--x:0;--y:20.87;--w:65.5" src="../assets/yandex-r-own.png" alt="Экран заявки с формированием собственного решения" />
+            <img class="fx" style="--x:77.42;--y:20.74;--w:22.75" src="../assets/yandex-r-own-form.png" alt="Форма собственного решения по заявке" />
+            <svg class="fx fx--deco" style="--x:63.33;--y:73.84;--w:17.58" viewBox="0 0 336 136" aria-hidden="true">
+              <defs>
+                <marker id="own-start" markerWidth="6" markerHeight="6" viewBox="0 0 6 6" refX="2.67" refY="2.67" orient="auto-start-reverse" fill="#91bcff"><circle cx="2.67" cy="2.67" r="2.67"/></marker>
+                <marker id="own-end" markerWidth="5" markerHeight="6" viewBox="0 0 5 6" refX="1" refY="2.88" orient="auto-start-reverse" fill="#91bcff"><path d="M5 2.88675L0 0V5.7735L5 2.88675Z"/></marker>
+              </defs>
+              <path fill="none" stroke="#91bcff" stroke-width="1.5" stroke-dasharray="4 4" marker-start="url(#own-start)" marker-end="url(#own-end)" d="M330 130H147.1c-3.9 0-7-3.1-7-7V13c0-3.9-3.1-7-7-7H6"/>
+            </svg>
+          </div>
+
+        </div>
+      </section>
+
+      <section>
+        <h2>А&nbsp;что&nbsp;дальше?</h2>
+        <ul>
+          <li>Юзабилити-тестирование новой версии. Проводим тесты на&nbsp;прототипе с&nbsp;пользователями админки.</li>
+          <li>После выкатки оцениваем метрики: скорость выполнения задачи (насколько сократилось время на&nbsp;выполнение задачи) и&nbsp;скорость ответа от&nbsp;менеджера до&nbsp;решения запроса.</li>
+          <li>Итеративная доработка. Результаты тестов и&nbsp;метрик станут основой для&nbsp;следующей итерации редизайна.</li>
+        </ul>
+      </section>
+    </div>
+    <nav class="case-nav">
+      <a class="case-nav__link" href="../index.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" aria-hidden="true">
+          <path d="M19 12H5M11 18l-6-6 6-6"/>
+        </svg>
+        Назад в&nbsp;портфолио
+      </a>
+      <a class="case-nav__link" href="splitwise.html">
+        Следующий кейс
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6"/>
+        </svg>
+      </a>
+    </nav>
+  </article>
+
+  <footer class="contacts">
+    <div class="contacts__photo">
+      <img src="../assets/me.png" alt="" />
+    </div>
+    <h2 class="contacts__title">Давайте знакомиться!</h2>
+    <a class="contacts__btn" href="https://t.me/SofiaManyapova" target="_blank" rel="noopener">Написать в&nbsp;Telegram</a>
+    <p class="contacts__mail">или на&nbsp;почту <a href="mailto:kulyshkina@gmail.com">kulyshkina@gmail.com</a></p>
+  </footer>
+</body>
+</html>
