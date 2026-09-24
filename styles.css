@@ -1,4 +1,4 @@
-﻿/* Design tokens */
+/* Design tokens */
 :root {
   --bg-fallback: linear-gradient(180deg, #a9bccb 0%, #b7c8b7 55%, #87a774 100%);
   --ink: #1a1a1a;
@@ -128,6 +128,15 @@ img { display: block; max-width: 100%; height: auto; }
   align-items: start;
 }
 
+/* Between tablet and 1440: keep the exact desktop composition and scale it down */
+@media (min-width: 821px) and (max-width: 1439px) {
+  .layout {
+    width: 1360px;
+    max-width: none;
+    zoom: var(--layout-scale, 1);
+  }
+}
+
 /* Profile */
 .glass {
   background: var(--glass-bg);
@@ -170,7 +179,7 @@ img { display: block; max-width: 100%; height: auto; }
   line-height: 1.45;
   margin: -8px 0 20px;
   opacity: 0.95;
-  max-width: 280px;
+  max-width: none;
 }
 .nowrap { white-space: nowrap; }
 .profile__meta {
@@ -298,8 +307,8 @@ img { display: block; max-width: 100%; height: auto; }
   top: 56%;
   height: 44%;
 }
-@media (max-width: 1100px) {
-  .card--square .card__art--badge { right: 3%; height: 22%; }
+@media (max-width: 820px) {
+  .card--square .card__art--badge { right: 4%; height: 38%; }
   .card--square .card__art--laptop { right: 3%; height: 36%; }
 }
 .card--migration-soon {
@@ -315,13 +324,14 @@ img { display: block; max-width: 100%; height: auto; }
   pointer-events: none;
 }
 .card__art--eyes {
-  left: calc(3.5% + 36px);
+  left: calc(3.5% + 28px);
   top: calc(64% - 54px);
   height: 37.8%;
 }
 .card__art--phone {
-  right: 48px;
-  top: 75px;
+  right: 40px;
+  top: auto;
+  bottom: -10px;
   height: 76.18%;
 }
 .card:has(.card__art--phone) .card__title {
@@ -338,6 +348,9 @@ img { display: block; max-width: 100%; height: auto; }
   top: calc(43% - 30px);
   height: 72.25%;
 }
+.cases__row--bottom > .card--tall:not(.card--square) {
+  container-type: inline-size;
+}
 .card__art--interface {
   left: 50%;
   top: calc(57% - 58px);
@@ -347,16 +360,16 @@ img { display: block; max-width: 100%; height: auto; }
   border-radius: 10px;
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
 }
-@media (max-width: 1100px) {
+@media (min-width: 821px) {
+  @container (max-width: 400px) {
+    .card__art--interface { top: calc(57% - 44px); }
+  }
+}
+@media (max-width: 820px) {
   .cases .card__title { font-size: 16px; }
   .card__art--phone { height: 62%; }
   .card__art--laptop { top: 56%; height: 67%; bottom: auto; }
   .card__art--badge { top: 66%; height: 29%; }
-}
-@media (max-width: 1000px) and (min-width: 821px) {
-  .card__art--phone { height: 50%; right: 4%; }
-  .card__art--eyes { height: 20.9%; top: 50%; }
-  .card__art--laptop { right: 2%; height: 50%; }
 }
 .card__title {
   font-size: 20px;
@@ -1278,7 +1291,7 @@ img { display: block; max-width: 100%; height: auto; }
 }
 
 /* Responsive */
-@media (max-width: 1200px) {
+@media (max-width: 820px) {
   .cases .card {
     height: auto;
     min-height: 260px;
