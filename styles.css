@@ -10,7 +10,7 @@
   --dot: rgba(0, 0, 0, 0.08);
   --shadow-card: 0 10px 30px rgba(20, 40, 60, 0.10), 0 2px 6px rgba(20, 40, 60, 0.06);
   --shadow-glass: 0 8px 30px rgba(20, 40, 60, 0.12);
-  --glass-bg: rgba(255, 255, 255, 0.28);
+  --glass-bg: rgba(20, 20, 20, 0.18);
   --glass-border: rgba(255, 255, 255, 0.45);
   --accent: #2b6ef6;
   --accent-soft: #eaf0ff;
@@ -42,17 +42,7 @@ img { display: block; max-width: 100%; height: auto; }
   inset: 0;
   z-index: -1;
   overflow: hidden;
-  background: var(--bg-fallback);
-}
-.bg__video {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 115%;
-  height: 130%;
-  transform: translateX(-50%) translateY(-12%);
-  object-fit: cover;
-  object-position: center 65%;
+  background: url('assets/bg-hills.jpg') center bottom / cover no-repeat, var(--bg-fallback);
 }
 
 /* Top bar */
@@ -78,18 +68,19 @@ img { display: block; max-width: 100%; height: auto; }
   line-height: 1;
   color: #6f6f6f;
   font-variant-numeric: tabular-nums;
+  color: var(--white);
 }
 .clock__divider {
   align-self: center;
   width: 1px;
   height: 32px;
-  background: var(--ink);
-  opacity: 0.15;
+  background: var(--white);
+  opacity: 0.3;
 }
 .clock__place {
   font-size: 14px;
   line-height: 1.45;
-  color: #6f6f6f;
+  color: var(--white);
 }
 .topbar__contacts {
   display: flex;
@@ -100,21 +91,21 @@ img { display: block; max-width: 100%; height: auto; }
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 9px 18px 9px 14px;
+  padding: 9px 18px;
   border: none;
   border-radius: 999px;
   background: var(--glass-bg);
   backdrop-filter: blur(24px) saturate(140%);
   -webkit-backdrop-filter: blur(24px) saturate(140%);
-  box-shadow: var(--shadow-glass);
-  color: var(--ink);
+  box-shadow: none;
+  color: var(--white);
   font-family: inherit;
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
   transition: background 0.2s, transform 0.2s;
 }
-.social-btn:hover { background: rgba(255, 255, 255, 0.45); transform: translateY(-1px); }
+.social-btn:hover { background: rgba(20, 20, 20, 0.3); transform: translateY(-1px); }
 .social-btn--icon-end { padding: 9px 14px 9px 18px; }
 
 /* Layout */
