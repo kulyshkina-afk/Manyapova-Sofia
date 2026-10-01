@@ -9,8 +9,8 @@
   if (!gl) return;
 
   // ---------- цвета сцены (сняты с исходной фотографии) ----------
-  const SKY_TOP = [0.39, 0.49, 0.63];
-  const SKY_HORIZON = [0.78, 0.82, 0.83];
+  const SKY_TOP = [0.2, 0.47, 0.86];
+  const SKY_HORIZON = [0.9, 0.95, 1.0];
   const FOG = [0.62, 0.72, 0.62];
   const SUN = (() => { const v = [0.1, 0.6, 0.8]; const l = Math.hypot(...v); return v.map((c) => c / l); })();
 
@@ -60,8 +60,9 @@
     in vec2 vUv; out vec4 o;
     uniform vec3 uTop; uniform vec3 uHorizon;
     void main() {
-      float k = smoothstep(0.3, 1.0, vUv.y);
-      o = vec4(mix(uHorizon, uTop, pow(k, 0.9)), 1.0);
+      // у горизонта почти белое, выше быстро набирает синеву
+      float k = smoothstep(0.36, 1.0, vUv.y);
+      o = vec4(mix(uHorizon, uTop, pow(k, 0.75)), 1.0);
     }`;
 
   const groundVS = `#version 300 es
