@@ -44,10 +44,49 @@
       <h1 class="profile__name">Маняпова Софья</h1>
       <p class="profile__tagline">Продуктовый дизайнер с&nbsp;опытом<br>2+&nbsp;года из&nbsp;<span class="nowrap">Санкт-Петербурга</span></p>
       <div class="profile__actions">
+        <a class="btn btn--ghost" href="https://disk.yandex.ru/i/uf9qYudlgjoDaQ" target="_blank" rel="noopener">Посмотреть резюме</a>
         <a class="btn btn--ghost" href="#experience">Опыт работы</a>
       </div>
     </aside>
 
+    <!-- Кейсы в виде папок на стеклянных плашках, разбросанных по полю (положение плашки — в style, как в макете Figma).
+         Папка собрана из слоёв: элементы интерфейса, жёлтая папка, стикер.
+         При наведении элементы выезжают из папки (сдвиг задаётся в style) -->
+    <section class="cases cases--folders">
+      <a class="case-folder glass" style="--x:35px;--y:11px" href="cases/splitwise.html">
+        <span class="folder">
+          <img class="folder__item" style="left:59.53%;top:9.4%;width:41.05%;--hx:8px;--hy:-10px;--hr:4deg;--d:.06s" src="assets/folders/sw-tab.png" alt="" />
+          <img class="folder__item" style="left:-1.78%;top:-1.94%;width:74.07%;--hx:-6px;--hy:-14px;--hr:-3deg;--d:0s" src="assets/folders/sw-card.png" alt="" />
+          <img class="folder__item" style="left:34.45%;top:15.23%;width:37.29%;--hx:3px;--hy:-24px;--hr:-7deg;--d:.03s" src="assets/folders/sw-plane.png" alt="" />
+          <img class="folder__front" style="left:1.28%;top:19.63%;width:98.58%" src="assets/folders/folder-yellow.png" alt="" />
+          <img class="folder__sticker" style="left:59.24%;top:55.58%;width:26.01%" src="assets/folders/sw-flower.png" alt="" />
+        </span>
+        <span class="case-folder__title">Улучшение сценария разделения совместных трат</span>
+      </a>
+
+      <a class="case-folder glass" style="--x:320px;--y:192px" href="cases/yandex-360.html">
+        <span class="folder">
+          <img class="folder__item" style="left:2.3%;top:-6.37%;width:71.37%;--hx:-6px;--hy:-16px;--hr:-2deg;--d:0s" src="assets/folders/ad-form.png" alt="" />
+          <img class="folder__item" style="left:39.2%;top:5.02%;width:61.34%;--hx:8px;--hy:-14px;--hr:3deg;--d:.05s" src="assets/folders/ad-card.png" alt="" />
+          <img class="folder__front" style="left:2.56%;top:21.5%;width:98.72%" src="assets/folders/folder-yellow.png" alt="" />
+          <img class="folder__sticker" style="left:64.1%;top:60.29%;width:25%" src="assets/folders/ad-sticker.png" alt="" />
+        </span>
+        <span class="case-folder__title">Оптимизация работы техподдержки</span>
+      </a>
+
+      <a class="case-folder glass" style="--r:0px;--y:64px" href="cases/conference.html">
+        <span class="folder">
+          <img class="folder__item" style="left:-5.32%;top:-5.06%;width:92.13%;--hx:-8px;--hy:-12px;--hr:-3deg;--d:0s" src="assets/folders/cf-ticket.png" alt="" />
+          <img class="folder__item" style="left:46.84%;top:4.64%;width:42.36%;--hx:0px;--hy:-18px;--hr:-2deg;--d:.03s" src="assets/folders/cf-card.png" alt="" />
+          <img class="folder__item" style="left:64.95%;top:-2.43%;width:44.21%;--hx:8px;--hy:-14px;--hr:3deg;--d:.06s" src="assets/folders/cf-phone.png" alt="" />
+          <img class="folder__front" style="left:2.56%;top:21.5%;width:98.72%" src="assets/folders/folder-yellow.png" alt="" />
+          <img class="folder__sticker" style="left:60.86%;top:65.71%;width:26.56%" src="assets/folders/cf-sticker.png" alt="" />
+        </span>
+        <span class="case-folder__title">Промо-лендинг для&nbsp;СПбГУ и&nbsp;фонда Потанина</span>
+      </a>
+    </section>
+    <!-- прежние карточки кейсов сохранены здесь и не показываются; чтобы вернуть — поменять местами с блоком выше -->
+    <template id="old-cases">
     <section class="cases">
       <div class="cases__row cases__row--top">
         <a class="card card--wide" href="cases/splitwise.html">
@@ -91,6 +130,7 @@
         </a>
       </div>
     </section>
+    </template>
   </main>
 
   <canvas class="lamb-layer" aria-hidden="true"></canvas>

@@ -16,6 +16,8 @@
   --accent: #2b6ef6;
   --accent-soft: #eaf0ff;
   --gap: 20px;
+  /* единый размер текста в кнопках блока «обо мне» и в подписях к кейсам */
+  --label-size: 15px;
   --page-pad: clamp(16px, 3vw, 40px);
 }
 
@@ -56,7 +58,10 @@ img { display: block; max-width: 100%; height: auto; }
   pointer-events: none;
 }
 .bg__grass.is-ready { opacity: 1; }
-/* слой с ягнятами — поверх карточек, но под панелью «Опыт работы»; клики проходят насквозь */
+/* снегопад: стеклянные плашки темнеют, чтобы белый текст на белом фоне читался */
+.is-snow { --glass-bg: rgba(38, 60, 96, 0.36); }
+.glass { transition: background-color 0.8s ease; }
+/* слой со скрепкой-помощником — поверх карточек, но под панелью «Опыт работы»; клики проходят насквозь */
 .lamb-layer {
   position: fixed;
   inset: 0;
@@ -64,6 +69,146 @@ img { display: block; max-width: 100%; height: auto; }
   height: 100%;
   z-index: 80;
   pointer-events: none;
+}
+
+/* интерфейс скрепки в духе The Sims; положение всех частей задаёт grass.js.
+   Плашки — то же стекло, что у блока «обо мне» */
+.clip-bubble,
+.clip-pie__item {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 81;
+  padding: 0 14px;
+  height: 30px;
+  border: none;
+  border-radius: 999px;
+  /* то же белое стекло, что у блока «обо мне» и плашек с папками */
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  box-shadow: var(--shadow-glass);
+  color: var(--white);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 30px;
+  white-space: nowrap;
+  text-shadow: 0 1px 5px rgba(20, 40, 60, 0.35);
+}
+
+/* реплика над головой — облачко речи с хвостиком: заметно белее, чем пункты меню,
+   чтобы читалось как слова скрепки, а не как кнопка */
+.clip-bubble {
+  --r: 16px;
+  --tail: 10px;
+  height: auto;
+  padding: 9px 15px;
+  border-radius: var(--r);
+  background: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  color: var(--ink);
+  line-height: 1.25;
+  text-shadow: none;
+  pointer-events: none;
+  transform-origin: 50% 100%;
+  animation: clip-bubble-in 0.22s ease-out;
+}
+/* тело облачка и хвостик — одна заливка, вырезанная маской: между ними нет стыка.
+   Слои маски (хвостик, две полосы и четыре угла) перекрывают друг друга с запасом */
+.clip-bubble::before {
+  --corner: radial-gradient(circle closest-side, #000 calc(100% - 0.5px), transparent);
+  --d: calc(var(--r) * 2);
+  --shape:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 12'%3E%3Cpath d='M0 0h16L9.1 10.9a1.4 1.4 0 0 1-2.2 0z'/%3E%3C/svg%3E") 50% 100% / 16px calc(var(--tail) + 2px) no-repeat,
+    linear-gradient(#000 0 0) 0 var(--r) / 100% calc(100% - var(--tail) - var(--d)) no-repeat,
+    linear-gradient(#000 0 0) var(--r) 0 / calc(100% - var(--d)) calc(100% - var(--tail)) no-repeat,
+    var(--corner) 0 0 / var(--d) var(--d) no-repeat,
+    var(--corner) 100% 0 / var(--d) var(--d) no-repeat,
+    var(--corner) 0 calc(100% - var(--tail)) / var(--d) var(--d) no-repeat,
+    var(--corner) 100% calc(100% - var(--tail)) / var(--d) var(--d) no-repeat;
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 calc(var(--tail) * -1);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  -webkit-mask: var(--shape);
+  mask: var(--shape);
+}
+.clip-bubble[hidden] { display: none; }
+@keyframes clip-bubble-in {
+  from { opacity: 0; scale: 0.9; }
+  to { opacity: 1; scale: 1; }
+}
+
+/* лёгкий крестик рядом со скрепкой: спрятать её в траву */
+.clip-close {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 81;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  color: var(--white);
+  font: inherit;
+  font-size: 17px;
+  line-height: 1;
+  opacity: 0.8;
+  cursor: pointer;
+  transition: color 0.15s ease, opacity 0.15s ease;
+}
+.clip-close[hidden] { display: none; }
+.clip-close:hover { color: #ffe27a; opacity: 1; }
+/* действия кольцом вокруг головы */
+.clip-pie__item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 133px;
+  cursor: pointer;
+  opacity: 0;
+  scale: 0.6;
+  pointer-events: none;
+  transition: opacity 0.18s ease, scale 0.26s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.15s ease;
+}
+.clip-pie.is-open .clip-pie__item {
+  opacity: 1;
+  scale: 1;
+  pointer-events: auto;
+}
+.clip-pie.is-open .clip-pie__item:nth-child(2) { transition-delay: 0.03s; }
+.clip-pie.is-open .clip-pie__item:nth-child(3) { transition-delay: 0.06s; }
+.clip-pie.is-open .clip-pie__item:nth-child(4) { transition-delay: 0.09s; }
+/* при наведении меняется только цвет текста: плашка не двигается и не меняет размер */
+.clip-pie.is-open .clip-pie__item:hover { color: #ffe27a; }
+/* «Подуть»: карточки слегка качает порывом ветра */
+@keyframes gale-sway {
+  0%, 100% { transform: none; }
+  18% { transform: translateX(7px) rotate(0.6deg); }
+  40% { transform: translateX(3px) rotate(0.25deg); }
+  58% { transform: translateX(6px) rotate(0.5deg); }
+  80% { transform: translateX(-2px) rotate(-0.2deg); }
+}
+.is-gale .card,
+.is-gale .profile {
+  animation: gale-sway 3.4s ease-in-out both;
+}
+.is-gale .cases__row--top > .card:nth-child(2),
+.is-gale .cases__row--bottom > .card:nth-child(2) { animation-delay: 0.12s; }
+.is-gale .cases__row--bottom > .card:nth-child(3) { animation-delay: 0.22s; }
+@media (prefers-reduced-motion: reduce) {
+  .is-gale .card,
+  .is-gale .profile { animation: none; }
 }
 
 /* Top bar */
@@ -159,7 +304,7 @@ img { display: block; max-width: 100%; height: auto; }
 .profile {
   border-radius: var(--card-radius);
   padding: 32px 28px;
-  color: var(--white);
+  color: var(--ink);
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -238,6 +383,14 @@ img { display: block; max-width: 100%; height: auto; }
   background: rgba(255, 255, 255, 0.28);
   transform: translateY(-1px);
 }
+/* кнопки в блоке «обо мне»: тёмный текст, размер и жирность как у подписей к кейсам */
+.profile .btn {
+  background: rgba(255, 255, 255, 0.4);
+  color: var(--ink);
+  font-size: var(--label-size);
+  font-weight: 500;
+}
+.profile .btn:hover { background: rgba(255, 255, 255, 0.55); }
 .btn--solid {
   background: var(--ink);
   color: var(--white);
@@ -277,7 +430,82 @@ img { display: block; max-width: 100%; height: auto; }
   aspect-ratio: 1 / 1;
 }
 
-/* Card */
+/* Кейсы — папки на стеклянных плашках, разбросанные по полю, как на рабочем столе.
+   Положение каждой плашки (--x, --y) взято из наброска для экрана 1440×900 и задаётся в разметке:
+   плашки стоят лесенкой и слегка перекрывают друг друга, правая упирается в край шапки */
+.cases--folders {
+  position: relative;
+  display: block;
+  min-height: calc(var(--card-h) * 2 + var(--gap));
+}
+.case-folder {
+  position: absolute;
+  /* плашка привязана либо к левому краю (--x), либо к правому (--r).
+     Правый отступ делится на масштаб раскладки, чтобы на узких экранах край
+     по-прежнему совпадал с кнопкой в шапке, которая не масштабируется */
+  left: var(--x, auto);
+  right: calc(var(--r, auto) / var(--layout-scale, 1));
+  top: var(--y, 0);
+  /* плашки одного размера: папка сверху, подпись по центру оставшегося места */
+  width: 325px;
+  height: 284px;
+  padding: 38px 20px 16px;
+  border-radius: 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--ink);
+  text-align: center;
+}
+/* папка из слоёв; положение и размер каждого слоя заданы в процентах от макета 432×395 */
+.folder {
+  position: relative;
+  display: block;
+  width: 192px;
+  flex-shrink: 0;
+  aspect-ratio: 432 / 395;
+}
+.folder > * {
+  position: absolute;
+  height: auto;
+  max-width: none;
+}
+/* содержимое папки: при наведении выезжает вверх и чуть расходится */
+.folder__item {
+  transform-origin: 50% 100%;
+  transition: transform 0.45s cubic-bezier(0.2, 0.9, 0.25, 1.2);
+  transition-delay: var(--d, 0s);
+}
+.case-folder:hover .folder__item,
+.case-folder:focus-visible .folder__item {
+  transform: translate(calc(var(--hx, 0px) * 0.66), calc(var(--hy, -14px) * 0.66)) rotate(var(--hr, 0deg));
+}
+@media (prefers-reduced-motion: reduce) {
+  .folder__item { transition: none; }
+}
+/* в снегопад стекло темнеет, поэтому подпись на плашке становится светлой */
+.case-folder { transition: color 0.8s ease; }
+.is-snow .case-folder { color: var(--white); }
+.case-folder__title {
+  margin: auto 0;
+  /* строки подписи делятся поровну, без одинокого слова в конце */
+  text-wrap: balance;
+  font-size: var(--label-size);
+  font-weight: 500;
+  line-height: 1.3;
+}
+/* планшет и телефон: плашки идут обычной сеткой, без разброса */
+@media (max-width: 1024px) {
+  .cases--folders {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--gap);
+    min-height: 0;
+  }
+  .case-folder { position: static; }
+}/* Card */
 .card {
   position: relative;
   background-color: var(--card-bg);
