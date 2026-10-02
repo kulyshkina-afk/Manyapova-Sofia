@@ -634,6 +634,8 @@
     night: () => {
       night.on = !night.on;
       night.button.textContent = night.on ? 'Включить день' : 'Включить ночь';
+      // ночью тёмный текст на плашках становится белым
+      document.body.classList.toggle('is-night', night.on);
     },
     // ясно ↔ дождь. Снег пока выключен: чтобы вернуть, добавить сюда третий шаг 'snow'
     weather: () => {
@@ -786,9 +788,9 @@
       };
       if (wasHidden) { const s = defaultSpot(); popUp(s[0], s[1], cheer); } else { clip.queue.length = 0; tweenTo(1, 0.3, true); cheer(); }
     });
-    // сама появляется через 5 секунд (на телефоне — только по тапу на траву)
+    // сама появляется через 3 секунды (на телефоне — только по тапу на траву)
     if (window.innerWidth > 640) {
-      setTimeout(() => { if (clip.level < 0.05 && !clip.tween) { const s = defaultSpot(); popUp(s[0], s[1]); } }, 5000);
+      setTimeout(() => { if (clip.level < 0.05 && !clip.tween) { const s = defaultSpot(); popUp(s[0], s[1]); } }, 3000);
     }
   }
 

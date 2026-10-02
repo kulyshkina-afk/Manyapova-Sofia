@@ -391,6 +391,15 @@ img { display: block; max-width: 100%; height: auto; }
   font-weight: 500;
 }
 .profile .btn:hover { background: rgba(255, 255, 255, 0.55); }
+/* ночью («Включить ночь» у скрепки) фон тёмный — текст в блоке «обо мне» и подписи к кейсам белеют,
+   а кнопки становятся прозрачнее, чтобы белый текст на них читался */
+.profile { transition: background-color 0.8s ease, color 0.8s ease; }
+.profile .btn { transition: transform 0.15s, background 0.8s, color 0.8s ease; }
+.is-night .profile,
+.is-night .profile .btn,
+.is-night .case-folder { color: var(--white); }
+.is-night .profile .btn { background: rgba(255, 255, 255, 0.16); }
+.is-night .profile .btn:hover { background: rgba(255, 255, 255, 0.26); }
 .btn--solid {
   background: var(--ink);
   color: var(--white);
