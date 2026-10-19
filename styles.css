@@ -1511,14 +1511,6 @@ img { display: block; max-width: 100%; height: auto; }
   flex-wrap: wrap;
   gap: 10px;
 }
-.job__badge {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--ink-soft);
-  background: #f0f1f3;
-  border-radius: 999px;
-  padding: 4px 10px;
-}
 .job__link {
   display: inline-block;
   font-size: 14px;
