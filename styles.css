@@ -269,9 +269,12 @@ img { display: block; max-width: 100%; height: auto; }
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
+  transition: background 0.8s, transform 0.2s;
 }
 .social-btn:hover { background: rgba(20, 20, 20, 0.3); transform: translateY(-1px); }
+/* ночью тёмная подложка сливается с небом — кнопки шапки становятся полупрозрачными белыми */
+.is-night .social-btn { background: rgba(255, 255, 255, 0.16); }
+.is-night .social-btn:hover { background: rgba(255, 255, 255, 0.26); }
 .social-btn--icon-end { padding: 9px 14px 9px 18px; }
 
 /* Layout */
