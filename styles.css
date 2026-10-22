@@ -1518,6 +1518,12 @@ img { display: block; max-width: 100%; height: auto; }
   margin-bottom: 10px;
 }
 .job__link:hover { text-decoration: underline; }
+/* короткое описание компании — на месте ссылки, когда сайта нет */
+.job__about {
+  font-size: 14px;
+  color: var(--ink-mute);
+  margin: 0 0 10px;
+}
 .job__role {
   font-size: 15px;
   color: var(--ink-soft);
