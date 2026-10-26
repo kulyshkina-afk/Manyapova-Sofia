@@ -2,3 +2,5 @@
 serve.ps1
 _*.png
 _*.html
+_opt/
+_originals/
