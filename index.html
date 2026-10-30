@@ -8,55 +8,88 @@
   <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png" />
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
   <meta name="description" content="Портфолио продуктового дизайнера Маняповой Софьи. UX/UI, веб- и мобильный дизайн." />
-  <link rel="stylesheet" href="https://static.tildacdn.com/css/fonts-tildasans.css" />
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400&amp;family=PT+Mono&amp;family=IBM+Plex+Sans:wght@600&amp;display=swap" />
+  <link rel="stylesheet" href="proto/retro.css" />
 </head>
-<body class="home">
+<body class="theme-soft">
   <div class="bg">
     <canvas class="bg__grass" aria-hidden="true"></canvas>
   </div>
 
-  <header class="topbar">
-    <div class="clock" aria-label="Время в Санкт-Петербурге">
-      <time class="clock__time" data-clock>--:--</time>
-      <span class="clock__divider" aria-hidden="true"></span>
-      <span class="clock__place">Санкт-Петербург<br />GMT +3</span>
-    </div>
-    <div class="topbar__contacts">
-      <button class="social-btn social-btn--icon-end" type="button" data-copy-email="kulyshkina@gmail.com" aria-label="Скопировать email kulyshkina@gmail.com">
-        <span data-copy-label>Email</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true">
-          <rect x="9" y="9" width="12" height="12" rx="2"/>
-          <path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/>
-        </svg>
-      </button>
-      <a class="social-btn" href="https://dribbble.com/SofiaManipova" target="_blank" rel="noopener">
-        Dribbble
-      </a>
-      <a class="social-btn" href="https://t.me/SofiaManyapova" target="_blank" rel="noopener">
-        Telegram
-      </a>
-    </div>
-  </header>
 
-  <main class="layout">
-    <aside class="profile glass">
-      <div class="profile__photo" aria-hidden="true">
-        <img src="assets/me.webp" alt="" onerror="this.style.display='none'" />
-      </div>
-      <h1 class="profile__name">Маняпова Софья</h1>
-      <p class="profile__tagline">Продуктовый дизайнер с&nbsp;опытом<br>2+&nbsp;года из&nbsp;<span class="nowrap">Санкт-Петербурга</span></p>
-      <div class="profile__actions">
-        <a class="btn btn--ghost" href="https://disk.yandex.ru/i/uf9qYudlgjoDaQ" target="_blank" rel="noopener">Посмотреть резюме</a>
-        <a class="btn btn--ghost" href="#experience">Опыт работы</a>
-      </div>
-    </aside>
+  <main class="desk">
+    <div class="desk__icons desk__grid">
+      <!-- окно «Обо мне» открыто сразу, на месте прежнего блока с профилем -->
+      <section class="win win--about" id="w-about" data-ui aria-label="Обо мне">
+        <header class="win__title">
+          <img class="win__icon" src="assets/favicon-32.png" alt="" />
+          <span class="win__name">Обо мне — Маняпова Софья</span>
+          <span class="win__crumb soft-only"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><circle cx="8" cy="5.5" r="2.8"/><path d="M2.5 14c.6-3 2.8-4.5 5.5-4.5s4.9 1.5 5.5 4.5"/></svg>Обо мне</span>
+          <span class="win__btns">
+            <button class="wbtn" type="button" aria-label="Свернуть" data-min><svg viewBox="0 0 10 10"><path d="M1 8h6" stroke="currentColor" stroke-width="2"/></svg></button>
+            <button class="wbtn wbtn--close" type="button" aria-label="Закрыть" data-close><svg viewBox="0 0 10 10"><path d="M1.5 1.5l7 7M8.5 1.5l-7 7" stroke="currentColor" stroke-width="1.8"/></svg></button>
+          </span>
+        </header>
+        <div class="win__body">
+          <div class="about">
+            <img class="about__photo" src="assets/me.webp" alt="" />
+            <h1 class="about__name">Маняпова Софья</h1>
+            <p class="about__tagline">Продуктовый дизайнер с&nbsp;опытом<br>2+&nbsp;года из&nbsp;Санкт-Петербурга</p>
+            <div class="tags soft-only"><span class="tag">Mobile</span><span class="tag">Web</span><span class="tag">B2C</span></div>
+            <div class="about__actions">
+              <a class="btn btn--wide" href="https://disk.yandex.ru/i/uf9qYudlgjoDaQ" target="_blank" rel="noopener">Посмотреть резюме</a>
+              <button class="btn btn--wide" type="button" data-open="w-jobs">Опыт работы</button>
+            </div>
+            <!-- контакты — три значка, как в «Панели управления» Windows: картинка и подпись, при наведении синеватая подсветка -->
+            <div class="about__contacts">
+              <button class="contact" type="button" data-copy-email="kulyshkina@gmail.com" title="Скопировать kulyshkina@gmail.com">
+                <svg class="contact__ico" viewBox="0 0 40 40" aria-hidden="true">
+                  <defs><linearGradient id="ic-mail" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#dce7fb"/></linearGradient></defs>
+                  <rect x="3" y="9" width="34" height="23" rx="2.5" fill="url(#ic-mail)" stroke="#2f62c9" stroke-width="1.6"/>
+                  <path d="M4 11l16 12 16-12" fill="none" stroke="#2f62c9" stroke-width="1.6" stroke-linejoin="round"/>
+                  <circle cx="31" cy="29" r="7" fill="#f6c443" stroke="#b98612" stroke-width="1.2"/>
+                  <text x="31" y="32.4" font-size="9.5" font-weight="700" text-anchor="middle" fill="#7a5200" font-family="Tahoma, sans-serif">@</text>
+                </svg>
+                <span data-copy-label>Email</span>
+                <!-- в спокойном виде — серые контурные значки в цвет текста -->
+                <svg class="contact__mini contact__mini--after soft-only" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="8.5" y="8.5" width="11" height="11" rx="2.2"/><path d="M15.5 8.5V6.2a1.7 1.7 0 0 0-1.7-1.7H6.2a1.7 1.7 0 0 0-1.7 1.7v7.6a1.7 1.7 0 0 0 1.7 1.7h2.3"/></svg>
+              </button>
+              <a class="contact" href="https://t.me/SofiaManyapova" target="_blank" rel="noopener">
+                <svg class="contact__ico" viewBox="0 0 40 40" aria-hidden="true">
+                  <defs><linearGradient id="ic-tg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5fc3f0"/><stop offset="1" stop-color="#1a8ccc"/></linearGradient></defs>
+                  <circle cx="20" cy="20" r="16" fill="url(#ic-tg)" stroke="#16709f" stroke-width="1.4"/>
+                  <path d="M11 19.5l17-6.6c.8-.3 1.5.2 1.2 1.4l-2.9 13.6c-.2 1-.8 1.2-1.6.8l-4.4-3.3-2.1 2c-.2.2-.4.4-.9.4l.3-4.5 8.2-7.4c.4-.3-.1-.5-.6-.2l-10.1 6.4-4.4-1.4c-.9-.3-.9-.9.2-1.3z" fill="#fff"/>
+                </svg>
+                <svg class="contact__mini soft-only" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.5 3.6L2.9 10.8c-1.2.5-1.2 1.2-.2 1.5l4.8 1.5 1.8 5.6c.2.6.4.8.9.8.4 0 .6-.2.9-.4l2.3-2.2 4.7 3.5c.9.5 1.5.2 1.7-.8l3.1-14.6c.3-1.3-.5-1.9-1.4-1.6zM9.6 14.4l-.4 4-1.4-4.5 10.3-6.5-8.5 7z"/></svg>
+                Telegram
+              </a>
+              <a class="contact" href="https://dribbble.com/SofiaManipova" target="_blank" rel="noopener">
+                <svg class="contact__ico" viewBox="0 0 40 40" aria-hidden="true">
+                  <defs><linearGradient id="ic-dr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f58fb8"/><stop offset="1" stop-color="#e2457f"/></linearGradient></defs>
+                  <circle cx="20" cy="20" r="16" fill="url(#ic-dr)" stroke="#b02c5e" stroke-width="1.4"/>
+                  <path d="M9 13c7 1 15 5 19 15M6 22c8-2 16-1 24 5M14 6c5 6 8 14 9 30M30 9c-4 5-11 8-24 9" fill="none" stroke="#a8285a" stroke-width="1.3" opacity="0.8"/>
+                </svg>
+                <svg class="contact__mini soft-only" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9.3"/><path d="M8.3 3.4c3.6 4.5 6 9.6 7.2 17.2M2.9 10.2c5.4.5 11.3-.7 15.6-4.7M5.3 18.6c3.8-4.5 9.3-5.9 15.7-4.1"/></svg>
+                Dribbble
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
 
-    <!-- Кейсы в виде папок на стеклянных плашках, разбросанных по полю (положение плашки — в style, как в макете Figma).
-         Папка собрана из слоёв: элементы интерфейса, жёлтая папка, стикер.
-         При наведении элементы выезжают из папки (сдвиг задаётся в style) -->
-    <section class="cases cases--folders">
-      <a class="case-folder glass" style="--x:35px;--y:0px" href="cases/splitwise.html">
+      <!-- кейсы — папки в отдельном окне; при наведении папка раскрывается -->
+      <section class="win win--cases" id="w-cases" data-ui aria-label="Кейсы">
+        <header class="win__title">
+          <img class="win__icon" src="assets/favicon-32.png" alt="" />
+          <span class="win__name">Кейсы</span>
+          <span class="win__crumb soft-only"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M1.5 3.5a1 1 0 0 1 1-1h3.8l1.5 2h5.7a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1z"/></svg>Кейсы</span>
+          <span class="win__btns">
+            <button class="wbtn" type="button" aria-label="Свернуть" data-min><svg viewBox="0 0 10 10"><path d="M1 8h6" stroke="currentColor" stroke-width="2"/></svg></button>
+            <button class="wbtn wbtn--close" type="button" aria-label="Закрыть" data-close><svg viewBox="0 0 10 10"><path d="M1.5 1.5l7 7M8.5 1.5l-7 7" stroke="currentColor" stroke-width="1.8"/></svg></button>
+          </span>
+        </header>
+        <div class="cases">
+      <a class="dicon" href="proto/splitwise.html" data-ui>
         <span class="folder">
           <img class="folder__item" style="left:59.53%;top:9.4%;width:41.05%;--hx:8px;--hy:-10px;--hr:4deg;--d:.06s" src="assets/folders/sw-tab.webp" alt="" />
           <img class="folder__item" style="left:-1.78%;top:-1.94%;width:74.07%;--hx:-6px;--hy:-14px;--hr:-3deg;--d:0s" src="assets/folders/sw-card.webp" alt="" />
@@ -64,20 +97,20 @@
           <img class="folder__front" style="left:1.28%;top:19.63%;width:98.58%" src="assets/folders/folder-yellow.webp" alt="" />
           <img class="folder__sticker" style="left:59.24%;top:55.58%;width:26.01%" src="assets/folders/sw-flower.webp" alt="" />
         </span>
-        <span class="case-folder__title">Улучшение сценария разделения совместных трат</span>
+        <span class="dicon__label">Улучшение сценария разделения совместных трат</span>
       </a>
 
-      <a class="case-folder glass" style="--x:320px;--y:192px" href="cases/yandex-360.html">
+      <a class="dicon" href="proto/yandex.html" data-ui>
         <span class="folder">
           <img class="folder__item" style="left:2.3%;top:-6.37%;width:71.37%;--hx:-6px;--hy:-16px;--hr:-2deg;--d:0s" src="assets/folders/ad-form.webp" alt="" />
           <img class="folder__item" style="left:39.2%;top:5.02%;width:61.34%;--hx:8px;--hy:-14px;--hr:3deg;--d:.05s" src="assets/folders/ad-card.webp" alt="" />
           <img class="folder__front" style="left:2.56%;top:21.5%;width:98.72%" src="assets/folders/folder-yellow.webp" alt="" />
           <img class="folder__sticker" style="left:64.1%;top:60.29%;width:25%" src="assets/folders/ad-sticker.webp" alt="" />
         </span>
-        <span class="case-folder__title">Оптимизация работы техподдержки</span>
+        <span class="dicon__label">Оптимизация работы техподдержки</span>
       </a>
 
-      <a class="case-folder glass" style="--r:0px;--y:64px" href="cases/conference.html">
+      <a class="dicon" href="proto/conference.html" data-ui>
         <span class="folder">
           <img class="folder__item" style="left:-5.32%;top:-5.06%;width:92.13%;--hx:-8px;--hy:-12px;--hr:-3deg;--d:0s" src="assets/folders/cf-ticket.webp" alt="" />
           <img class="folder__item" style="left:46.84%;top:4.64%;width:42.36%;--hx:0px;--hy:-18px;--hr:-2deg;--d:.03s" src="assets/folders/cf-card.webp" alt="" />
@@ -85,128 +118,116 @@
           <img class="folder__front" style="left:2.56%;top:21.5%;width:98.72%" src="assets/folders/folder-yellow.webp" alt="" />
           <img class="folder__sticker" style="left:60.86%;top:65.71%;width:26.56%" src="assets/folders/cf-sticker.webp" alt="" />
         </span>
-        <span class="case-folder__title">Промо-лендинг для&nbsp;СПбГУ и&nbsp;фонда Потанина</span>
+        <span class="dicon__label">Промо-лендинг для&nbsp;СПбГУ и&nbsp;фонда Потанина</span>
       </a>
-    </section>
-    <!-- прежние карточки кейсов сохранены здесь и не показываются; чтобы вернуть — поменять местами с блоком выше -->
-    <template id="old-cases">
-    <section class="cases">
-      <div class="cases__row cases__row--top">
-        <a class="card card--wide" href="cases/splitwise.html">
-          <h2 class="card__title">Улучшила сценарий разделения<br>совместных трат</h2>
-          <img class="card__art card__art--eyes" src="assets/Frame%202131328383.png" alt="" />
-          <img class="card__art card__art--phone" src="assets/Group%202087325979.png" alt="" />
-        </a>
-
-        <div class="card card--wide card--disabled card--migration-soon">
-          <h2 class="card__title">Продумала мини-апп для&nbsp;комфортной миграции данных</h2>
-          <div class="card__soon">
-            <svg class="card__soon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="28" height="28" aria-hidden="true">
-              <circle cx="12" cy="12" r="9"/>
-              <path d="M12 7v5l3.5 2"/>
-            </svg>
-            <span class="card__soon-text">Кейс в&nbsp;процессе<br />оформления</span>
-          </div>
         </div>
-      </div>
+      </section>
+    </div>
 
-      <div class="cases__row cases__row--bottom">
-        <a class="card card--tall" href="cases/yandex-360.html">
-          <h2 class="card__title">Оптимизировала работу поддержки: новый интерфейс админки</h2>
-          <img class="card__art card__art--interface" src="assets/%D0%A1%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0%20%D0%B7%D0%B0%D1%8F%D0%B2%D0%BA%D0%B8_%D0%B0%D0%B2%D1%82%D0%BE%D0%B0%D0%BD%D0%B0%D0%BB%D0%B8%D0%B7.png" alt="" />
-        </a>
-
-        <a class="card card--tall card--square" href="cases/conference.html">
-          <h2 class="card__title">Спроектировала промо-лендинг для&nbsp;всероссийской конференции СПбГУ и&nbsp;фонда Потанина</h2>
-          <img class="card__art card__art--badge" src="assets/conference-card-badge.png" alt="" />
-        </a>
-
-        <a class="card card--resume card--square glass" href="https://disk.yandex.ru/i/uf9qYudlgjoDaQ" target="_blank" rel="noopener">
-          <div class="card__resume-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="28" height="28">
-              <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/>
-              <path d="M14 3v5h5"/>
-              <path d="M9 13h6M9 17h4"/>
-            </svg>
-          </div>
-          <span class="card__resume-title">Посмотреть<br />резюме</span>
-        </a>
+    <!-- окно «Опыт работы» — открывается из «Обо мне» или из меню «Пуск» -->
+    <section class="win win--jobs" id="w-jobs" data-ui hidden aria-label="Опыт работы">
+      <header class="win__title">
+        <img class="win__icon" src="assets/favicon-32.png" alt="" />
+        <span class="win__name">Опыт работы — 2 г 3 мес</span>
+        <span class="win__crumb soft-only"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><path d="M1.5 3.5a1 1 0 0 1 1-1h3.8l1.5 2h5.7a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1z"/></svg>Опыт работы · <b>2 г 3 мес</b></span>
+        <span class="win__btns">
+          <button class="wbtn wbtn--close" type="button" aria-label="Закрыть" data-close><svg viewBox="0 0 10 10"><path d="M1.5 1.5l7 7M8.5 1.5l-7 7" stroke="currentColor" stroke-width="1.8"/></svg></button>
+        </span>
+      </header>
+      <div class="win__body">
+        <div class="jobs">
+          <article class="job">
+            <div class="job__period">сен 2026 — настоящее время</div>
+            <h3 class="job__company">ProggyIT</h3>
+            <p class="job__role">Продуктовый дизайнер · образовательная платформа с&nbsp;peer-to-peer обучением</p>
+            <ul>
+              <li>Спроектировала бэкофис платформы для&nbsp;трёх ролей: администратора, представителя организации и&nbsp;ментора.</li>
+              <li>Разобрала требования из&nbsp;документации API, сущностей и&nbsp;ролей, собрала OOUX-модель и&nbsp;Job Statements по&nbsp;ролям.</li>
+              <li>Собрала low-fi вайрфреймы с&nbsp;прототипными связями: около 70&nbsp;экранов по&nbsp;трём ролям.</li>
+            </ul>
+          </article>
+          <article class="job">
+            <div class="job__period">июл 2025 — настоящее время</div>
+            <h3 class="job__company">Дизайн-студия Юзли</h3>
+            <p class="job__role">UX/UI и&nbsp;коммуникационный дизайнер</p>
+            <p class="job__project">Всероссийская конференция от&nbsp;СПбГУ и&nbsp;фонда Потанина</p>
+            <ul>
+              <li>Спроектировала информационную архитектуру и&nbsp;UX/UI промо-лендинга с&nbsp;нуля. Переработала большой объём неструктурированных данных в&nbsp;понятный пользовательский путь, обеспечив удобную регистрацию и&nbsp;онбординг для&nbsp;200+ участников.</li>
+              <li>Разработала масштабируемую систему гайдлайнов: адаптировала айдентику на&nbsp;50+ форматов.</li>
+              <li>Создала UI-kit для&nbsp;презентаций спикеров: 5+ мастер-макетов, 40+ паттернов слайдов.</li>
+            </ul>
+            <p class="job__project">Зоогостиница и&nbsp;клиника Rabbits Hotel &amp; Hospital</p>
+            <ul>
+              <li>Разработала просветительский сайт Rabbits Friendly как&nbsp;новый канал привлечения клиентов.</li>
+              <li>Создала экосистему бренда: логотип, визуалы для&nbsp;соцсетей и&nbsp;офлайн-носители. Обновление обеспечило прирост клиентской базы на&nbsp;50%.</li>
+            </ul>
+          </article>
+          <article class="job">
+            <div class="job__period">июл 2024 — июл 2025</div>
+            <h3 class="job__company">ООО «Медиа Гавань»</h3>
+            <p class="job__role">UX/UI и&nbsp;коммуникационный дизайнер</p>
+            <ul>
+              <li>UX-аудит и&nbsp;редизайн интернет-магазина антиквариата: упростила сценарий покупки, что&nbsp;привело к&nbsp;росту конверсии.</li>
+              <li>Проектировала пользовательские сценарии для&nbsp;продуктов в&nbsp;разных нишах (e-commerce, B2B, сервисы).</li>
+              <li>На&nbsp;пресейле делала low-fi прототипы и&nbsp;визуальные концепции для&nbsp;8+ проектов.</li>
+            </ul>
+          </article>
+        </div>
+        <div class="statusbar"><span>3 места работы</span></div>
       </div>
     </section>
-    </template>
   </main>
 
-  <canvas class="lamb-layer" aria-hidden="true"></canvas>
-
-  <div class="drawer-overlay" id="experienceOverlay"></div>
-  <aside class="drawer" id="experienceDrawer" aria-hidden="true">
-    <div class="drawer__header">
-      <div class="drawer__title-group">
-        <h2 class="drawer__title">Опыт работы</h2>
-        <span class="drawer__duration">2&nbsp;г 3&nbsp;мес</span>
+  <!-- меню «Пуск» -->
+  <nav class="startmenu" data-ui hidden aria-label="Меню Пуск">
+    <div class="startmenu__head"><img src="assets/me.webp" alt="" />Маняпова Софья</div>
+    <div class="startmenu__cols">
+      <div class="startmenu__col">
+        <a class="startmenu__item" href="https://disk.yandex.ru/i/uf9qYudlgjoDaQ" target="_blank" rel="noopener"><b>Резюме</b></a>
+        <button class="startmenu__item" type="button" data-open="w-jobs"><b>Опыт работы</b></button>
+        <button class="startmenu__item" type="button" data-open="w-about">Обо мне</button>
+        <div class="startmenu__sep"></div>
+        <div class="startmenu__caption">Кейсы</div>
+        <a class="startmenu__item" href="proto/splitwise.html"><img src="assets/folders/folder-yellow.webp" alt="" />Splitwise</a>
+        <a class="startmenu__item" href="proto/yandex.html"><img src="assets/folders/folder-yellow.webp" alt="" />Яндекс 360</a>
+        <a class="startmenu__item" href="proto/conference.html"><img src="assets/folders/folder-yellow.webp" alt="" />Конференция СПбГУ</a>
       </div>
-      <button class="drawer__close" id="experienceClose" aria-label="Закрыть">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20" aria-hidden="true">
-          <path d="M6 6l12 12M18 6L6 18"/>
-        </svg>
+      <div class="startmenu__col startmenu__col--right">
+        <button class="startmenu__item" type="button" data-copy-email="kulyshkina@gmail.com"><span data-copy-label>Скопировать почту</span></button>
+        <a class="startmenu__item" href="https://t.me/SofiaManyapova" target="_blank" rel="noopener">Telegram</a>
+        <a class="startmenu__item" href="https://dribbble.com/SofiaManipova" target="_blank" rel="noopener">Dribbble</a>
+      </div>
+    </div>
+    <div class="startmenu__foot">
+      <button type="button" data-night><span class="power">☾</span>Режим сна</button>
+    </div>
+  </nav>
+
+  <!-- панель задач -->
+
+  <footer class="taskbar" data-ui>
+    <button class="start" type="button" aria-expanded="false" aria-label="Пуск">
+      <span class="flag" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="start__label">пуск</span><img class="start__ava soft-only" src="assets/me.webp" alt="" /><span class="soft-only">Софья</span>
+    </button>
+    <div class="tasks">
+      <button class="task is-active" type="button" data-task="w-about"><img src="assets/favicon-32.png" alt="" />Обо мне</button>
+      <button class="task" type="button" data-task="w-cases"><img src="assets/favicon-32.png" alt="" />Кейсы</button>
+      <button class="task" type="button" data-task="w-jobs" hidden><img src="assets/favicon-32.png" alt="" />Опыт работы</button>
+    </div>
+    <div class="tray">
+      <button type="button" data-copy-email="kulyshkina@gmail.com" title="Скопировать почту" aria-label="Скопировать почту">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
       </button>
+      <a href="https://t.me/SofiaManyapova" target="_blank" rel="noopener" title="Telegram" aria-label="Telegram">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.5 3.6L2.9 10.8c-1.2.5-1.2 1.2-.2 1.5l4.8 1.5 1.8 5.6c.2.6.4.8.9.8.4 0 .6-.2.9-.4l2.3-2.2 4.7 3.5c.9.5 1.5.2 1.7-.8l3.1-14.6c.3-1.3-.5-1.9-1.4-1.6zM9.6 14.4l-.4 4 -1.4-4.5 10.3-6.5-8.5 7z"/></svg>
+      </a>
+      <span class="tray__lang">RU</span>
+      <time class="tray__time" data-clock>--:--</time>
     </div>
+  </footer>
 
-    <div class="drawer__body">
-      <article class="job">
-        <div class="job__period">сен 2026 — настоящее время</div>
-        <h3 class="job__company">ProggyIT</h3>
-        <p class="job__about">Образовательная платформа с&nbsp;peer-to-peer обучением</p>
-        <p class="job__role">Продуктовый дизайнер</p>
-        <ul>
-          <li>Спроектировала бэкофис платформы для&nbsp;трёх ролей: администратора, представителя организации и&nbsp;ментора.</li>
-          <li>Разобрала требования из&nbsp;документации API, сущностей и&nbsp;ролей, собрала OOUX-модель и&nbsp;Job Statements по&nbsp;ролям.</li>
-          <li>Собрала low-fi вайрфреймы с&nbsp;прототипными связями: около 70&nbsp;экранов по&nbsp;трём ролям.</li>
-        </ul>
-      </article>
-
-      <article class="job">
-        <div class="job__period">июл 2025 — настоящее время</div>
-        <h3 class="job__company">Дизайн-студия Юзли</h3>
-        <a class="job__link" href="https://yuzli.ru/" target="_blank" rel="noopener">yuzli.ru</a>
-        <p class="job__role">UX/UI и&nbsp;коммуникационный дизайнер</p>
-
-        <div class="job__project">
-          <h4 class="job__project-title">Всероссийская конференция от&nbsp;СПбГУ и&nbsp;фонда Потанина</h4>
-          <ul>
-            <li>Спроектировала информационную архитектуру и&nbsp;UX/UI промо-лендинга с&nbsp;нуля для&nbsp;всероссийской конференции от&nbsp;СПбГУ и&nbsp;фонда Потанина. Переработала большой объём неструктурированных данных в&nbsp;понятный пользовательский путь, обеспечив удобную регистрацию и&nbsp;онбординг для&nbsp;200+ участников конференции.</li>
-            <li>Разработала масштабируемую систему гайдлайнов: адаптировала айдентику на&nbsp;50+ форматов (web, полиграфия, мерч), сохранив консистентность бренда на&nbsp;всех точках контакта.</li>
-            <li>Оптимизировала процесс подготовки спикеров, создав универсальный UI-kit для&nbsp;презентаций (5+ мастер-макетов, 40+ готовых паттернов слайдов), что&nbsp;сократило время на&nbsp;сборку материалов.</li>
-          </ul>
-        </div>
-
-        <div class="job__project">
-          <h4 class="job__project-title">Зоогостиница и&nbsp;клиника Rabbits Hotel &amp; Hospital</h4>
-          <ul>
-            <li>Разработала просветительский сайт Rabbits Friendly как&nbsp;новый канал привлечения клиентов для&nbsp;зоогостиницы и&nbsp;клиники Rabbits Hotel &amp; Hospital.</li>
-            <li>Оформление соцсетей помогло привлечь новую аудиторию: прирост подписчиков 20+ каждый месяц в&nbsp;течение полутора лет.</li>
-            <li>Создала полную экосистему бренда: логотип, визуалы для&nbsp;соцсетей и&nbsp;пакет офлайн-носителей. Единый стиль укрепил узнаваемость и&nbsp;экспертность. Визуальное обновление обеспечило прирост клиентской базы на&nbsp;50%.</li>
-          </ul>
-        </div>
-      </article>
-
-      <article class="job">
-        <div class="job__period">июл 2024 — июл 2025</div>
-        <h3 class="job__company">ООО «Медиа Гавань»</h3>
-        <a class="job__link" href="https://media-bay.ru/" target="_blank" rel="noopener">media-bay.ru</a>
-        <p class="job__role">UX/UI и&nbsp;коммуникационный дизайнер</p>
-        <ul>
-          <li>UX-аудит и&nbsp;редизайн интернет-магазина антиквариата: переработала интерфейс, упростив сценарий покупки и&nbsp;обновив визуальный стиль, что&nbsp;привело к&nbsp;росту конверсии в&nbsp;покупку.</li>
-          <li>Проектировала пользовательские сценарии для&nbsp;продуктов в&nbsp;разных нишах (e-commerce, B2B, сервисы), что&nbsp;ускорило запуск проектов.</li>
-          <li>На&nbsp;этапе пресейла разрабатывала low-fi прототипы и&nbsp;вариативные визуальные концепции для&nbsp;8+ проектов, обеспечивая заказчикам наглядную визуализацию продукта и&nbsp;ускоряя принятие решений на&nbsp;ранних стадиях.</li>
-        </ul>
-      </article>
-    </div>
-  </aside>
-
-  <script src="experience-drawer.js"></script>
-  <script src="clock.js"></script>
-  <script src="layout-scale.js"></script>
+  <canvas class="lamb-layer" aria-hidden="true"></canvas>
+  <script src="proto/retro.js"></script>
   <script src="grass.js"></script>
 </body>
 </html>
