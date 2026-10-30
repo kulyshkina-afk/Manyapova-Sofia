@@ -696,6 +696,7 @@
     if (!bubble) return;
     setPie(false);
     bubble.textContent = text;
+    bubble.style.pointerEvents = ''; // кнопки-ответы (если были) пропали вместе со старым текстом
     bubble.hidden = false;
   };
   const showMenu = () => setPie(true);
@@ -733,7 +734,8 @@
     return Math.abs(toScreen(x, y, z)[1] - toScreen(x, y + 1, z)[1]) || 1;
   };
   // место по умолчанию — правый нижний угол
-  const defaultSpot = () => castRay(0.906, 0.928) || castRay(0.5, 0.95) || [2, -4.5];
+  // страница может поднять место появления скрепки: window.clipSpotLift — на сколько пикселей выше
+  const defaultSpot = () => castRay(0.906, 0.928 - (window.clipSpotLift || 0) / window.innerHeight) || castRay(0.5, 0.95) || [2, -4.5];
 
   function startMow() {
     if (mow.active) return;
@@ -768,12 +770,14 @@
   if (spriteProg) {
     document.addEventListener('click', (e) => {
       if (e.target.closest('a, button, .card, .profile, .topbar, .drawer, .drawer-overlay, .clip-bubble')) return;
-      // клик по самой скрепке открывает или закрывает меню
+      // клик по самой скрепке открывает или закрывает меню — даже если она стоит поверх окна
       const s = clip.screen;
       if (clip.level > 0.5 && Math.abs(e.clientX - s.x) < s.w / 2 + 12 && e.clientY > s.top - 8 && e.clientY < s.top + s.h) {
         togglePie();
         return;
       }
+      // [data-ui] — окна, панель задач и прочий интерфейс, клик по которым не должен звать скрепку
+      if (e.target.closest('[data-ui]')) return;
       const hit = castRay(e.clientX / window.innerWidth, e.clientY / window.innerHeight);
       if (hit && !mow.active) popUp(hit[0], hit[1]);
     });
@@ -792,6 +796,31 @@
     if (window.innerWidth > 640) {
       setTimeout(() => { if (clip.level < 0.05 && !clip.tween) { const s = defaultSpot(); popUp(s[0], s[1]); } }, 3000);
     }
+    // вопрос от скрепки с кнопками-ответами — для страниц, которым есть что предложить читателю
+    // (например, в конце кейса: «Открыть следующий кейс?»). choices: [{ label, onClick }],
+    // timeout — через сколько секунд реплика сама погаснет (0 — висит до ответа)
+    window.clipAsk = (text, choices = [], timeout = 0) => {
+      const show = () => {
+        say(text);
+        if (choices.length) {
+          const row = document.createElement('div');
+          row.className = 'clip-bubble__actions';
+          choices.forEach((c) => {
+            const b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'clip-bubble__btn';
+            b.textContent = c.label;
+            b.addEventListener('click', () => { quiet(); if (c.onClick) c.onClick(); });
+            row.appendChild(b);
+          });
+          bubble.appendChild(row);
+          bubble.style.pointerEvents = 'auto';
+        }
+        if (timeout) later(timeout, () => { if (bubble.firstChild && bubble.firstChild.textContent === text) quiet(); });
+      };
+      if (clip.level < 0.05 && !clip.tween) { const s = defaultSpot(); popUp(s[0], s[1], show); }
+      else { clip.queue.length = 0; tweenTo(1, 0.3, true); show(); }
+    };
   }
 
   // мировая точка → экранные пиксели
@@ -1050,8 +1079,13 @@
         if (!bubble.hidden && visible) {
           // под дождём реплика поднимается над зонтиком
           const lift = 18 + Math.min(weather.rain, 1) * clip.screen.h * 0.54;
-          // место задаётся свойством translate, чтобы scale при появлении рос от самой плашки
-          bubble.style.translate = `calc(${Math.round(cx)}px - 50%) calc(${Math.round(clip.screen.top - lift)}px - 100%)`;
+          // место задаётся свойством translate, чтобы scale при появлении рос от самой плашки.
+          // Длинная реплика не должна уходить за край экрана: плашку сдвигаем внутрь,
+          // а хвостик (--tail-x) остаётся над скрепкой
+          const bw = bubble.offsetWidth;
+          const bx = Math.min(Math.max(cx, bw / 2 + 8), window.innerWidth - bw / 2 - 8);
+          bubble.style.setProperty('--tail-x', `${Math.round(bw / 2 + cx - bx)}px`);
+          bubble.style.translate = `calc(${Math.round(bx)}px - 50%) calc(${Math.round(clip.screen.top - lift)}px - 100%)`;
         }
         if (pieOpen && visible) {
           // как в макете: пункты стоят столбиком сбоку от скрепки, слегка дугой —

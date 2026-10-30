@@ -1,0 +1,1277 @@
+/* Прототип «ретро-рабочий стол»: хром окон и панели задач — в духе Windows XP (или спокойный светлый вариант, переключатель вверху),
+   а содержимое окон набрано современно и крупно, чтобы кейсы удобно читались.
+   Фон с травой и скрепку рисует ../grass.js, как на живом сайте */
+
+:root {
+  --tb-h: 40px;
+  --ui-font: Tahoma, Verdana, 'Segoe UI', 'PT Sans', sans-serif;
+  --title-font: 'Trebuchet MS', Tahoma, 'PT Sans', sans-serif;
+  --doc-font: 'PT Sans', 'Segoe UI', Tahoma, sans-serif;
+  --ink: #1b1b1b;
+  --muted: #5f6368;
+  --chrome: #ece9d8;
+  --win-border: #0831d9;
+  --title-grad: linear-gradient(180deg, #0997ff 0%, #0053ee 8%, #0050ee 40%, #0066ff 88%, #0066ff 93%, #005bff 95%, #003dd7 96%, #003dd7 100%);
+  --title-inactive: linear-gradient(180deg, #7a96df 0%, #6a87da 50%, #7d9be4 100%);
+  --sel: #316ac5;
+  --link: #0b4bd6;
+  --tip-bg: #ffffe1;
+  --pane-grad: linear-gradient(180deg, #7ba2e7 0%, #6375d6 100%);
+  --pane-head: linear-gradient(90deg, #ffffff 0%, #c6d3f7 100%);
+  --pane-body: #d6dff7;
+  --pane-ink: #215dc6;
+  --pane-bg: #f3f6fc;
+  --mono: 'PT Mono', ui-monospace, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+/* ретро-курсор «рука с пальцем», как в Windows; на чётких экранах — вдвое крупная картинка */
+html, body, a, button, [data-open], .dicon, .win__title {
+  cursor: url('cursor-hand.png') 6 1, pointer;
+  cursor: -webkit-image-set(url('cursor-hand.png') 1x, url('cursor-hand@2x.png') 2x) 6 1, pointer;
+  cursor: image-set(url('cursor-hand.png') 1x, url('cursor-hand@2x.png') 2x) 6 1, pointer;
+}
+body {
+  font: 13px/1.4 var(--ui-font);
+  color: #000;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+img { display: block; max-width: 100%; height: auto; }
+button { font: inherit; color: inherit; }
+
+/* ---------- фон и скрепка (как на живом сайте) ---------- */
+.bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: url('../assets/bg-hills.jpg') center bottom / cover no-repeat, #8fb3d9;
+}
+.bg__grass { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity 0.6s ease; pointer-events: none; }
+.bg__grass.is-ready { opacity: 1; }
+.lamb-layer { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 80; pointer-events: none; }
+
+/* реплики скрепки — жёлтый «балун» Windows с чёрной рамкой */
+.clip-bubble {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 81;
+  max-width: 260px;
+  padding: 8px 12px;
+  border: 1px solid #000;
+  border-radius: 8px;
+  background: var(--tip-bg);
+  color: #000;
+  font: 13px/1.35 var(--ui-font);
+  box-shadow: 2px 3px 6px rgba(0, 0, 0, 0.25);
+  pointer-events: none;
+  transform-origin: 50% 100%;
+  animation: balloon-in 0.18s ease-out;
+}
+/* хвостик: чёрный треугольник под жёлтым, чтобы у хвоста тоже была рамка */
+.clip-bubble::before,
+.clip-bubble::after {
+  content: '';
+  position: absolute;
+  left: var(--tail-x, 50%); /* grass.js держит хвостик над скрепкой, даже если плашку сдвинули от края */
+  top: 100%;
+  border: solid transparent;
+  transform: translateX(-50%);
+}
+.clip-bubble::before { border-width: 11px 9px 0; border-top-color: #000; }
+.clip-bubble::after { border-width: 10px 8px 0; border-top-color: var(--tip-bg); margin-top: -1px; }
+.clip-bubble[hidden] { display: none; }
+@keyframes balloon-in { from { opacity: 0; scale: 0.9; } to { opacity: 1; scale: 1; } }
+
+/* пункты меню скрепки — обычные кнопки Windows */
+.clip-pie__item {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 81;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 133px;
+  height: 28px;
+  padding: 0 12px;
+  border: 1px solid #003c74;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #ffffff 0%, #f0f0ea 45%, #e3e2d8 100%);
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+  color: #000;
+  font: 12px var(--ui-font);
+  white-space: nowrap;
+  opacity: 0;
+  scale: 0.6;
+  pointer-events: none;
+  transition: opacity 0.18s ease, scale 0.26s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.clip-pie.is-open .clip-pie__item { opacity: 1; scale: 1; pointer-events: auto; }
+.clip-pie.is-open .clip-pie__item:nth-child(2) { transition-delay: 0.03s; }
+.clip-pie.is-open .clip-pie__item:nth-child(3) { transition-delay: 0.06s; }
+.clip-pie.is-open .clip-pie__item:nth-child(4) { transition-delay: 0.09s; }
+
+.clip-close {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 81;
+  width: 21px;
+  height: 21px;
+  padding: 0;
+  border: 1px solid #fff;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #e9846a 0%, #d6512b 60%, #c2391a 100%);
+  color: #fff;
+  font: bold 13px/1 var(--ui-font);
+}
+.clip-close[hidden] { display: none; }
+
+/* ---------- окна ---------- */
+.win {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px 8px 0 0;
+  background: var(--chrome);
+  box-shadow: 0 0 0 1px rgba(0, 30, 90, 0.18), 3px 6px 22px rgba(0, 0, 0, 0.35);
+  animation: win-open 0.18s ease-out;
+}
+@keyframes win-open { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: none; } }
+.win[hidden] { display: none; }
+.win__title {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 30px;
+  padding: 0 5px 0 9px;
+  border-radius: 8px 8px 0 0;
+  background: var(--title-grad);
+  color: #fff;
+  font: bold 13px var(--title-font);
+  text-shadow: 1px 1px #0f1089;
+  user-select: none;
+}
+.win__icon { width: 16px; height: 16px; flex: none; }
+.win__name { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.win__btns { display: flex; gap: 2px; }
+.wbtn {
+  display: grid;
+  place-items: center;
+  width: 21px;
+  height: 21px;
+  padding: 0;
+  border: 1px solid #fff;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #5c98f5 0%, #2c6ee8 50%, #1f5fe0 100%);
+  color: #fff;
+  text-decoration: none;
+}
+.wbtn:hover { filter: brightness(1.12); }
+.wbtn--close { background: linear-gradient(180deg, #e9846a 0%, #d6512b 60%, #c2391a 100%); }
+.wbtn svg { width: 11px; height: 11px; display: block; }
+.win__body { flex: 1; min-height: 0; display: flex; flex-direction: column; padding: 0; }
+
+/* кнопки Windows */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 30px;
+  padding: 4px 16px;
+  border: 1px solid #003c74;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #ffffff 0%, #f0f0ea 45%, #e3e2d8 100%);
+  color: #000;
+  font: 13px var(--ui-font);
+  text-decoration: none;
+}
+.btn:hover, .clip-pie.is-open .clip-pie__item:hover, .clip-bubble__btn:hover { border-color: #1b4fb0; background: linear-gradient(180deg, #4a87ec 0%, #316ac5 100%); color: #fff; box-shadow: none; }
+.btn:active { background: #2a5bb0; color: #fff; }
+.btn--wide { width: 100%; min-height: 34px; font-size: 14px; }
+
+/* группа с подписью — как рамка «Группа» в настройках Windows */
+.group {
+  margin: 0 0 16px;
+  padding: 10px 14px 14px;
+  border: 1px solid #d0d0bf;
+  border-radius: 4px;
+}
+.group > legend { padding: 0 5px; color: #0046d5; font: 13px var(--ui-font); }
+
+/* ---------- рабочий стол ---------- */
+.desk {
+  position: fixed;
+  inset: 0 0 var(--tb-h);
+}
+.desk__icons {
+  position: relative;
+  width: calc(100% - 48px);
+  height: 100%;
+  margin: 0 auto;
+}
+.dicon {
+  width: 190px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 6px 8px;
+  border: 1px dotted transparent;
+  text-decoration: none;
+  outline: none;
+}
+.dicon__label {
+  max-width: 200px;
+  padding: 2px 5px;
+  color: #fff;
+  font: 14px/1.3 var(--ui-font);
+  text-align: center;
+  text-wrap: balance;
+  text-shadow: 1px 1px 1px #000, 0 0 3px rgba(0, 0, 0, 0.7);
+}
+.dicon:hover .dicon__label,
+.dicon:focus-visible .dicon__label { background: var(--sel); text-shadow: none; }
+.dicon:focus-visible { border-color: rgba(255, 255, 255, 0.8); }
+
+/* папка из слоёв — та же, что на живом сайте; при наведении содержимое выезжает */
+.folder { position: relative; display: block; flex: none; width: var(--folder-w, 170px); aspect-ratio: 432 / 395; }
+.folder > * { position: absolute; height: auto; max-width: none; }
+.folder__item {
+  transform-origin: 50% 100%;
+  transition: transform 0.45s cubic-bezier(0.2, 0.9, 0.25, 1.2);
+  transition-delay: var(--d, 0s);
+}
+.dicon:hover .folder__item,
+.dicon:focus-visible .folder__item {
+  transform: translate(calc(var(--hx, 0px) * 0.6), calc(var(--hy, -14px) * 0.6)) rotate(var(--hr, 0deg));
+}
+
+/* окно «Обо мне» */
+/* окно «Обо мне» — в левом верхнем углу рабочего стола */
+.win--about { left: 0; top: 24px; width: 400px; }
+.about { padding: 22px 22px 18px; background: #fff; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.about__photo { width: 112px; height: 112px; border: 3px solid #fff; border-radius: 6px; box-shadow: 0 0 0 1px #a5a5a5, 2px 3px 8px rgba(0, 0, 0, 0.2); object-fit: cover; }
+.about__name { margin: 16px 0 4px; font: bold 26px/1.2 var(--title-font); color: #1c3f94; }
+.about__tagline { margin: 0 0 18px; font: 16px/1.45 var(--doc-font); color: #333; }
+.about__actions { display: grid; gap: 8px; width: 100%; }
+/* контакты — три значка с подписями, как в «Панели управления»; над ними — вдавленная линия-разделитель */
+.about__contacts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  width: 100%;
+  margin: 18px 0 0;
+  padding-top: 14px;
+}
+.contact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 4px 7px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: none;
+  color: #000;
+  font: 12px var(--ui-font);
+  text-decoration: none;
+}
+.contact:hover, .contact:focus-visible { border-color: #a7c2f0; background: linear-gradient(180deg, #f1f6fe, #dfeafd); outline: none; }
+.contact:active { background: #cfdffb; }
+.contact__ico { width: 36px; height: 36px; filter: drop-shadow(1px 2px 1px rgba(0, 0, 0, 0.2)); }
+.about__mail { margin: 8px 0 0; color: var(--muted); font: 12px var(--ui-font); user-select: all; }
+
+
+/* кнопки-ответы в реплике скрепки */
+.clip-bubble__actions { display: flex; gap: 6px; margin-top: 8px; }
+.clip-bubble__btn {
+  min-height: 24px;
+  padding: 2px 12px;
+  border: 1px solid #003c74;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #ffffff 0%, #f0f0ea 45%, #e3e2d8 100%);
+  color: #000;
+  font: 12px var(--ui-font);
+}
+
+.statusbar {
+  flex: none;
+  display: flex;
+  gap: 2px;
+  height: 22px;
+  padding: 2px 3px;
+  font: 11px/16px var(--ui-font);
+  color: #000;
+}
+.statusbar > span { padding: 0 8px; border: 1px solid; border-color: #aca899 #fff #fff #aca899; white-space: nowrap; overflow: hidden; }
+.statusbar > span:first-child { flex: 1; }
+
+/* окно «Опыт работы» */
+.win--jobs { left: 440px; top: 36px; width: 560px; height: min(620px, calc(100vh - var(--tb-h) - 72px)); z-index: 5; }
+.jobs { flex: 1; overflow: auto; padding: 22px 26px; background: #fff; font: 15px/1.55 var(--doc-font); color: var(--ink); }
+.job { padding-bottom: 18px; margin-bottom: 18px; border-bottom: 1px solid #e4e4dc; }
+.job:last-child { border-bottom: 0; margin-bottom: 0; }
+.job__period { color: var(--muted); font: 12px var(--ui-font); }
+.job__company { margin: 4px 0 2px; font: bold 19px var(--title-font); color: #1c3f94; }
+.job__role { margin: 0 0 8px; color: #444; }
+.job ul { margin: 6px 0 0; padding-left: 20px; }
+.job li { margin-bottom: 6px; }
+.job__project { margin: 10px 0 0; font-weight: 700; }
+
+/* ---------- панель задач ---------- */
+.taskbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 85;
+  display: flex;
+  align-items: stretch;
+  height: var(--tb-h);
+  background: linear-gradient(180deg, #1f2f86 0, #3165c4 3%, #3682e5 6%, #4490e6 10%, #3883e5 12%, #2b71e0 15%, #2663da 18%, #235bd6 20%, #2258d5 23%, #2157d6 38%, #245ddb 54%, #2562df 86%, #245fdc 89%, #2158d4 92%, #1d4ec0 95%, #1941a5 98%);
+  color: #fff;
+}
+.start {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 26px 0 12px;
+  border: 0;
+  border-radius: 0 14px 14px 0;
+  background: linear-gradient(180deg, #3d9b3d 0%, #57b557 8%, #46a846 40%, #3b9a3b 70%, #2f892f 100%);
+  box-shadow: inset -2px 0 4px rgba(0, 0, 0, 0.25), 2px 0 4px rgba(0, 0, 0, 0.3);
+  color: #fff;
+  font: italic bold 19px var(--title-font);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+.start:hover { filter: brightness(1.08); }
+.start[aria-expanded='true'] { filter: brightness(0.9); }
+/* флажок из четырёх цветных долек */
+.flag { display: grid; grid-template-columns: 9px 9px; gap: 2px; transform: skewY(-6deg); }
+.flag i { width: 9px; height: 8px; border-radius: 2px 3px 2px 3px; }
+.flag i:nth-child(1) { background: #f35325; }
+.flag i:nth-child(2) { background: #81bc06; }
+.flag i:nth-child(3) { background: #05a6f0; }
+.flag i:nth-child(4) { background: #ffba08; }
+.tasks { flex: 1; min-width: 0; display: flex; align-items: center; gap: 4px; padding: 0 10px; }
+.task {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 220px;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 3px;
+  background: linear-gradient(180deg, #5d9cf6 0%, #3c81f3 45%, #2f6fe6 100%);
+  color: #fff;
+  font: 12px var(--ui-font);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.task img { width: 16px; height: 16px; flex: none; }
+.task[hidden] { display: none; }
+.task.is-active { background: linear-gradient(180deg, #1d4fb8 0%, #1e52b7 100%); box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.45); }
+.tray {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px 0 12px;
+  border-left: 1px solid #1042af;
+  background: linear-gradient(180deg, #0c59b9 0%, #139ee9 6%, #18b5f2 12%, #139beb 30%, #1290e8 70%, #0d8dea 90%, #0b75d9 100%);
+  box-shadow: inset 1px 0 1px #18bbff;
+  font: 12px var(--ui-font);
+}
+.tray a, .tray button {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: none;
+  color: #fff;
+}
+.tray a:hover, .tray button:hover { background: rgba(255, 255, 255, 0.2); }
+.tray svg { width: 16px; height: 16px; }
+.tray__lang { padding: 1px 4px; border: 1px solid rgba(255, 255, 255, 0.5); border-radius: 2px; font-size: 11px; }
+.tray__time { font-size: 13px; font-variant-numeric: tabular-nums; }
+
+/* меню «Пуск» */
+.startmenu {
+  position: fixed;
+  left: 0;
+  bottom: var(--tb-h);
+  z-index: 90;
+  width: 400px;
+  border: 1px solid #0831d9;
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 4px 4px 16px rgba(0, 0, 0, 0.4);
+}
+.startmenu[hidden] { display: none; }
+.startmenu__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: linear-gradient(180deg, #1868ce 0%, #0e60cb 12%, #0e60cb 20%, #1164cf 32%, #1667cf 33%, #1b6cd3 47%, #1e70d9 54%, #2476dc 60%, #297ae0 65%, #3482e3 77%, #3786e5 79%, #428ee9 90%, #4791eb 100%);
+  color: #fff;
+  font: bold 15px var(--title-font);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+.startmenu__head img { width: 44px; height: 44px; border: 2px solid #fff; border-radius: 4px; object-fit: cover; }
+.startmenu__cols { display: grid; grid-template-columns: 1fr 1fr; border-top: 2px solid #e98c2c; }
+.startmenu__col { display: flex; flex-direction: column; padding: 6px; }
+.startmenu__col--right { background: #d3e5fa; border-left: 1px solid #95bdee; }
+.startmenu__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 0;
+  background: none;
+  color: #000;
+  font: 13px var(--ui-font);
+  text-align: left;
+  text-decoration: none;
+}
+.startmenu__item b { font-weight: 700; }
+.startmenu__item:hover { background: var(--sel); color: #fff; }
+.startmenu__item img { width: 24px; height: 24px; object-fit: contain; flex: none; }
+.startmenu__sep { height: 1px; margin: 4px 6px; background: linear-gradient(90deg, transparent, #c5c5c5, transparent); }
+.startmenu__caption { padding: 6px 8px 2px; color: #555; font: 11px var(--ui-font); }
+.startmenu__foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  padding: 6px 10px;
+  background: linear-gradient(180deg, #4282d6 0%, #3b85e0 5%, #418ae3 10%, #418ae3 50%, #3576d8 90%, #1f5fc2 100%);
+}
+.startmenu__foot button { display: flex; align-items: center; gap: 6px; padding: 3px 8px; border: 0; border-radius: 3px; background: none; color: #fff; font: 12px var(--ui-font); }
+.startmenu__foot button:hover { background: rgba(255, 255, 255, 0.2); }
+.power { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 4px; background: linear-gradient(180deg, #f08a4f, #d4501f); border: 1px solid #fff; font-size: 12px; }
+
+/* переключатель вида прототипа */
+.theme-switch {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 95;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border: 1px solid #919b9c;
+  border-radius: 4px;
+  background: var(--tip-bg);
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.25);
+  font: 12px var(--ui-font);
+}
+.theme-switch .btn { min-height: 24px; padding: 2px 10px; font-size: 12px; }
+.theme-switch .btn[aria-pressed='true'] { background: linear-gradient(180deg, #e3e2d8, #f4f3ee); box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.3); font-weight: 700; }
+
+/* ---------- окно кейса ---------- */
+.win--doc {
+  position: fixed;
+  left: 24px;
+  top: 16px;
+  bottom: calc(var(--tb-h) + 14px);
+  /* окно кейса на 20% шире прежнего (было min(1180px, 100vw − 340px)), но не шире экрана */
+  width: min(1416px, calc((100vw - 340px) * 1.2), calc(100vw - 48px));
+  z-index: 10;
+}
+.win--doc.is-max { width: calc(100vw - 48px); }
+/* минималистичное окно кейса: та же синяя рамка XP, но тоньше и спокойнее */
+.win--doc { box-shadow: 0 0 0 1px rgba(0, 30, 90, 0.18), 0 10px 30px rgba(0, 20, 80, 0.28); }
+.win--doc .win__title { height: 28px; }
+.toolbar { flex: none; display: flex; align-items: center; gap: 10px; padding: 5px 8px; border-bottom: 1px solid #d6d3c4; }
+.tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px 0 4px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: none;
+  color: #000;
+  font: 13px var(--ui-font);
+  text-decoration: none;
+}
+.tool:hover { border-color: #ceceC3; background: linear-gradient(180deg, #fff, #f0f0ea); }
+.tool[aria-disabled='true'] { opacity: 0.45; pointer-events: none; }
+.tool__ico { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #8fe08f, #2f9d2f 70%); color: #fff; box-shadow: inset 0 -2px 3px rgba(0, 0, 0, 0.25); }
+.tool__ico svg { width: 14px; height: 14px; }
+.addr { flex: none; display: flex; align-items: center; gap: 6px; padding: 4px 8px 6px; border-bottom: 1px solid #d6d3c4; font: 13px var(--ui-font); color: #555; }
+.addr__field { flex: 1; display: flex; align-items: center; gap: 6px; height: 26px; padding: 0 8px; border: 1px solid #b9c7df; border-radius: 2px; background: #fff; color: #444; font: 12.5px var(--ui-font); overflow: hidden; white-space: nowrap; }
+.addr__field img { width: 16px; height: 16px; }
+
+.explorer { flex: 1; min-height: 0; display: flex; }
+/* левая панель задач, как в «Проводнике» XP */
+.taskpane { flex: none; width: 220px; overflow: auto; padding: 18px 10px; background: var(--pane-bg); border-right: 1px solid #d5dced; }
+.pane { margin-bottom: 12px; }
+.pane__head { padding: 0 8px 8px; color: var(--pane-ink); font: bold 12px var(--ui-font); }
+.pane__body { display: grid; gap: 1px; }
+.pane__body a { padding: 5px 8px; border-left: 2px solid transparent; border-radius: 0 3px 3px 0; color: #24407f; font: 12.5px/1.35 var(--ui-font); text-decoration: none; }
+.pane__body a:hover { background: #e3eafa; }
+.pane__body a.is-current { border-left-color: #2d6ae3; background: #dbe5fb; color: #000; font-weight: 700; }
+
+/* сам документ: белый лист, крупный читаемый текст */
+.doc {
+  position: relative; /* от него считаются отступы разделов для навигации */
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+  scroll-behavior: smooth;
+  background: #fff;
+  font: 17px/1.6 var(--doc-font);
+  color: var(--ink);
+}
+/* лист кейса: боковая панель не меняется, весь прирост ширины окна уходит сюда */
+.doc__inner { max-width: 1100px; margin: 0 auto; padding: 40px 48px 56px; }
+.doc__text { max-width: 720px; }
+.doc .eyebrow { margin: 0 0 6px; color: var(--muted); font: 13px var(--ui-font); letter-spacing: 0.02em; }
+.doc h1 { margin: 0 0 24px; font: bold 36px/1.15 var(--title-font); color: #1c3f94; }
+.doc h2 { margin: 56px 0 18px; font: bold 26px/1.25 var(--title-font); color: #1c3f94; scroll-margin-top: 16px; }
+.doc h3 { margin: 0 0 10px; font: bold 21px/1.3 var(--title-font); color: #1b1b1b; }
+.doc p { margin: 0 0 14px; }
+.doc ul, .doc ol { margin: 0 0 14px; padding-left: 22px; }
+.doc li { margin-bottom: 6px; }
+.doc .group { margin-bottom: 18px; }
+.doc .group > legend { font-size: 13px; }
+.doc .group p:last-child, .doc .group ul:last-child, .doc .group ol:last-child { margin-bottom: 0; }
+/* контекст кейса: «подпись — значение» строками на светлой подложке, как карточка свойств */
+/* колонка подписей общая для всех строк и по ширине самой длинной подписи */
+.facts { display: grid; grid-template-columns: max-content 1fr; column-gap: 28px; margin: 0 0 18px; padding: 4px 22px; border-radius: 10px; background: #f3f3f3; }
+.facts__row { grid-column: 1 / -1; display: grid; grid-template-columns: subgrid; padding: 16px 0; }
+.facts__row + .facts__row { border-top: 1px solid #e0e0e0; }
+/* у PT Sans нет начертания medium: берём обычное и чуть утолщаем обводкой букв */
+.facts dt { color: #7a7a7a; font: 400 15px/1.6 var(--doc-font); -webkit-text-stroke: 0.35px currentColor; padding-top: 1px; }
+.facts dd { margin: 0; }
+@media (max-width: 640px) {
+  .facts { grid-template-columns: 1fr; }
+  .facts__row { row-gap: 4px; }
+}
+/* картинки — в рамке, как вставленный скриншот */
+.shot { margin: 22px 0; padding: 4px; border: 1px solid #c9c7ba; background: #f7f6f0; }
+.shot img { width: 100%; }
+.shot--hero { margin-top: 0; }
+
+/* аудит: тёмная сцена, заметки — жёлтые балуны */
+.audit { margin: 22px 0; padding: 18px 18px 26px; border: 1px solid #1d1d1d; background: #2e2e2e; }
+.audit__head { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 26px; }
+.audit__head h2 { margin: 0; color: #fff; font-size: 22px; }
+.audit__stage { position: relative; aspect-ratio: 1294 / 665; margin: 0 2%; }
+.audit__phone { position: absolute; width: 16%; }
+.audit__phone--1 { left: 12.75%; top: 16.24%; }
+.audit__phone--2 { left: 34%; top: 25.86%; }
+.audit__phone--3 { left: 54.25%; top: 9.62%; }
+.audit__phone--4 { left: 73.34%; top: 21.65%; }
+.audit__note {
+  position: absolute;
+  z-index: 2;
+  width: 29%;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 7px 10px;
+  border: 1px solid #000;
+  border-radius: 8px;
+  background: var(--tip-bg);
+  box-shadow: 2px 3px 6px rgba(0, 0, 0, 0.35);
+  color: #000;
+  font: 12.5px/1.35 var(--ui-font);
+}
+.audit__note p { margin: 0; }
+.audit__avatar { flex: none; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: #1a6fe6; color: #fff; font: bold 11px var(--ui-font); }
+.audit__note--a { left: 19.86%; top: 0; }
+.audit__note--b { left: 61.2%; top: 1.2%; }
+.audit__note--c { left: 36.17%; top: 72%; }
+.audit__note--d { left: 0; top: 84%; }
+.audit__note--e { left: 70%; top: 88%; }
+
+/* проблема и гипотезы */
+.problem { margin-top: 56px; padding-top: 8px; border-top: 1px solid #e4e4dc; }
+.problem .eyebrow { margin-top: 16px; }
+.problem h2 { margin-top: 0; }
+.problem__list { list-style: none; padding: 0; }
+.problem__list li { display: flex; gap: 10px; }
+.problem__list img { width: 22px; height: 22px; flex: none; margin-top: 3px; }
+/* гипотезы — стикеры «Записки» из Windows: жёлтый листок с тёмной полоской сверху,
+   чуть повёрнуты и лежат по два в ряд; при наведении выпрямляются */
+.tips {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 22px 20px;
+  margin: 22px 0 10px;
+  padding: 0 4px;
+}
+.tip {
+  position: relative;
+  margin: 0;
+  padding: 0 16px 16px;
+  border: 1px solid #e3d36b;
+  background: linear-gradient(180deg, #fffbc4 0%, #fdf49a 100%);
+  box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.04), 3px 6px 12px rgba(80, 60, 0, 0.18);
+  font-size: 16px;
+  line-height: 1.5;
+  rotate: -1.2deg;
+  transition: rotate 0.2s ease, translate 0.2s ease, box-shadow 0.2s ease;
+}
+.tip:nth-child(even) { rotate: 1.1deg; }
+.tip:nth-child(3n) { rotate: -0.5deg; }
+.tip:hover { rotate: 0deg; translate: 0 -2px; box-shadow: 1px 2px 0 rgba(0, 0, 0, 0.04), 5px 10px 18px rgba(80, 60, 0, 0.22); }
+/* «Гипотеза N» — на полоске сверху, как заголовок записки */
+.tip strong {
+  display: block;
+  margin: 0 -16px 12px;
+  padding: 5px 12px;
+  border-bottom: 1px solid #e3d36b;
+  background: linear-gradient(180deg, #f8ea7d 0%, #f1df62 100%);
+  color: #5c4a00;
+  font: bold 12px var(--ui-font);
+}
+@media (prefers-reduced-motion: reduce) { .tip { transition: none; } }
+
+.doc__nav { display: flex; justify-content: space-between; gap: 12px; margin-top: 56px; padding-top: 20px; border-top: 1px solid #e4e4dc; }
+
+/* полосы прокрутки в духе XP */
+.doc, .jobs, .taskpane { scrollbar-color: #c1d2f7 #f4f3ee; }
+.doc::-webkit-scrollbar, .jobs::-webkit-scrollbar { width: 17px; }
+.doc::-webkit-scrollbar-track, .jobs::-webkit-scrollbar-track { background: #f4f3ee; border-left: 1px solid #e3e2d8; }
+.doc::-webkit-scrollbar-thumb, .jobs::-webkit-scrollbar-thumb { border: 1px solid #fff; border-radius: 3px; background: linear-gradient(90deg, #c8d6fb, #b9c9f3); box-shadow: inset 0 0 0 1px #9cb1e9; }
+
+/* ---------- вариант «Спокойный»: светлые окна, как заметки и папки с файлами ----------
+   От Windows остаются окна, панель задач и меню, но без синего и объёма.
+   Трава, скрепка и её реплики — те же, что в XP */
+body:not(.theme-soft) .soft-only { display: none !important; }
+.theme-soft .xp-only { display: none !important; }
+.theme-soft {
+  --tb-h: 50px;
+  --ui-font: 'PT Sans', 'Segoe UI', system-ui, sans-serif;
+  --title-font: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+  --ink: #1d1d1f;
+  --muted: #8a8a8e;
+  --line: #e7e7ea;
+  --soft-bg: #fbfbfa;
+  --soft-bar: #f2f3f7;
+  --accent: #3b5bdb;
+  --accent-bg: #e8edff;
+  --sel: var(--accent-bg);
+  --tip-bg: #fff;
+}
+/* реплики скрепки — белая карточка с тонкой рамкой; хвостик того же цвета */
+.theme-soft .clip-bubble { max-width: 280px; padding: 10px 14px; border: 1px solid #dcdce0; border-radius: 12px; color: var(--ink); font: 14px/1.45 var(--ui-font); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18); }
+.theme-soft .clip-bubble::before { border-top-color: #dcdce0; }
+.theme-soft .clip-bubble__actions { gap: 6px; margin-top: 10px; }
+.theme-soft .clip-bubble__btn { min-height: 30px; padding: 4px 12px; border: 1px solid #dcdce0; border-radius: 8px; background: #fff; color: var(--ink); font: 500 14px var(--ui-font); }
+.theme-soft .clip-bubble__btn:hover { border-color: #c9c9cf; background: #f5f5f7; color: var(--ink); }
+/* первый ответ — главный, синий */
+.theme-soft .clip-bubble__btn:first-child { border-color: var(--accent); background: var(--accent); color: #fff; }
+.theme-soft .clip-bubble__btn:first-child:hover { border-color: #2f4fc4; background: #2f4fc4; color: #fff; }
+/* меню скрепки — белые кнопки-таблетки */
+.theme-soft .clip-pie__item { height: 34px; padding: 0 14px; border: 1px solid #dcdce0; border-radius: 10px; background: #fff; color: var(--ink); font: 500 14px var(--ui-font); box-shadow: 0 6px 18px rgba(0, 0, 0, 0.16); }
+.theme-soft .clip-pie.is-open .clip-pie__item:hover { border-color: var(--accent); background: var(--accent); color: #fff; }
+.theme-soft .clip-close { width: 24px; height: 24px; border: 1px solid #dcdce0; border-radius: 50%; background: #fff; color: #6e6e73; font: 500 13px/1 var(--ui-font); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); }
+.theme-soft .win { border-radius: 12px; background: var(--soft-bg); overflow: hidden; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 18px 50px rgba(0, 0, 0, 0.22); }
+/* заголовок окна — путь к файлу серым, как «Проект · 2023–2024» */
+.theme-soft .win__title { height: 38px; padding: 0 8px 0 14px; border-radius: 0; border-bottom: 1px solid var(--line); background: var(--soft-bar); color: var(--muted); font: 500 14px var(--ui-font); text-shadow: none; }
+.theme-soft .win__icon, .theme-soft .win__name { display: none; }
+.win__crumb { flex: 1; min-width: 0; display: flex; align-items: center; gap: 7px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.win__crumb svg { width: 15px; height: 15px; flex: none; }
+.win__crumb b { color: var(--ink); font-weight: 500; }
+.theme-soft .wbtn { width: 26px; height: 26px; border: 0; border-radius: 6px; background: none; color: #6e6e73; }
+.theme-soft .wbtn:hover { background: #e4e5ea; filter: none; }
+.theme-soft .wbtn svg { width: 10px; height: 10px; }
+.theme-soft .statusbar { height: 28px; align-items: center; padding: 0 14px; border-top: 1px solid var(--line); background: var(--soft-bar); color: var(--muted); font: 12px var(--mono); }
+.theme-soft .statusbar > span { padding: 0; border: 0; }
+
+.theme-soft .btn { min-height: 38px; padding: 6px 16px; border: 1px solid #dcdce0; border-radius: 8px; background: #fff; color: var(--ink); font: 500 14px var(--ui-font); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04); }
+.theme-soft .btn:hover { border-color: #c9c9cf; background: #f5f5f7; color: var(--ink); }
+.theme-soft .btn:active { background: #ececef; color: var(--ink); }
+/* текстовые блоки — просто: без подложек и линеек, подпись — короткий жирный подзаголовок, обычные списки */
+.theme-soft .group { margin: 0 0 26px; padding: 0; border: 0; border-radius: 0; background: none; }
+.theme-soft .group > legend { float: left; width: 100%; margin: 0 0 8px; padding: 0; color: var(--ink); font: 600 16px/1.3 var(--ui-font); }
+.theme-soft .group > legend + * { clear: both; }
+.theme-soft .doc .group ul, .theme-soft .doc .group ol { padding-left: 20px; }
+.theme-soft .doc .group li::marker { color: #8a8a8e; }
+/* «Контекст» — четыре пункта сеткой 2 × 2: жирная подпись и текст под ней */
+.theme-soft .facts { grid-template-columns: 1fr 1fr; gap: 26px 48px; margin: 0; padding: 0; border: 0; border-radius: 0; background: none; }
+.theme-soft .facts__row { grid-column: auto; display: block; padding: 0; }
+.theme-soft .facts__row + .facts__row { border-top: 0; }
+.theme-soft .facts dt { margin-bottom: 8px; padding: 0; color: var(--ink); font: 600 16px/1.3 var(--ui-font); -webkit-text-stroke: 0; }
+
+/* метки-теги, как B2B / Product / Web в примере */
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag { padding: 3px 9px; border-radius: 6px; background: var(--accent-bg); color: var(--accent); font: 12px/1.4 var(--mono); }
+
+/* «Обо мне» — карточка-персона: фото слева, имя и теги справа, кнопки внизу */
+.theme-soft .win--about { width: 400px; }
+/* запас высоты от фото уходит в строку с тегами: описание стоит сразу под именем, теги — по низу фото */
+.theme-soft .about { display: grid; grid-template-columns: 112px 1fr; grid-template-rows: auto auto 1fr auto auto; column-gap: 18px; align-items: start; padding: 24px 22px 20px; background: var(--soft-bg); text-align: left; }
+.theme-soft .about .tags { align-self: end; }
+.theme-soft .about__photo { grid-row: 1 / span 3; width: 112px; height: 144px; border: 0; border-radius: 10px; box-shadow: none; }
+.theme-soft .about__name { margin: 2px 0 4px; color: var(--ink); font: 600 22px/1.2 var(--title-font); }
+.theme-soft .about__tagline { margin: 0 0 12px; color: #55555a; font: 14px/1.5 var(--ui-font); }
+.theme-soft .about__actions { grid-column: 1 / -1; grid-template-columns: 1fr 1fr; margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
+.theme-soft .btn--wide { min-height: 40px; padding: 4px 10px; font-size: 14px; white-space: nowrap; }
+/* контакты — строкой простых текстовых ссылок: «Telegram ↗  Dribbble ↗  Скопировать почту», без значков */
+.theme-soft .about__contacts { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 18px; padding-top: 0; }
+.theme-soft .contact { flex-direction: row; align-items: center; gap: 0; padding: 0; border: 0; border-radius: 0; background: none; color: #55555a; font: 400 14px/1.4 var(--ui-font); white-space: nowrap; transition: color 0.15s ease; }
+.theme-soft .contact__ico { display: none; }
+.contact__mini { width: 15px; height: 15px; flex: none; margin-right: 6px; }
+.contact__mini--after { margin: 0 0 0 6px; }
+/* после соцсетей — значок «открыть во внешнем окне»: квадрат со стрелкой наружу, светлее текста */
+.theme-soft a.contact::after {
+  content: '';
+  flex: none;
+  width: 13px;
+  height: 13px;
+  margin-left: 6px;
+  background: currentColor;
+  opacity: 0.55;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M13.5 4.5h6v6M19.5 4.5L11 13M17.5 14v4a1.5 1.5 0 0 1-1.5 1.5H6A1.5 1.5 0 0 1 4.5 18V8A1.5 1.5 0 0 1 6 6.5h4'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M13.5 4.5h6v6M19.5 4.5L11 13M17.5 14v4a1.5 1.5 0 0 1-1.5 1.5H6A1.5 1.5 0 0 1 4.5 18V8A1.5 1.5 0 0 1 6 6.5h4'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+/* значок копирования у почты — такой же светлый и того же размера */
+.theme-soft .contact__mini--after { width: 13px; height: 13px; opacity: 0.55; }
+.theme-soft .contact[data-copy-email] { order: 1; }
+.theme-soft .contact:hover, .theme-soft .contact:focus-visible { border: 0; background: none; color: var(--ink); }
+.theme-soft .contact:active { background: none; color: var(--accent); }
+
+/* папки на рабочем столе — подпись прямо на небе, без плашки. Днём тёмная (контраст к небу 5,8–8,6, белый — только 2–2,9),
+   ночью белая; при наведении подчёркивание: синий акцент на голубом небе не читается */
+.theme-soft .dicon__label { padding: 2px 6px; background: none; color: var(--ink); font: 600 14px/1.35 var(--ui-font); text-shadow: 0 0 8px rgba(255, 255, 255, 0.6); transition: color 0.3s ease; }
+.theme-soft .dicon:hover .dicon__label, .theme-soft .dicon:focus-visible .dicon__label { background: none; text-decoration: underline; text-underline-offset: 3px; }
+.theme-soft.is-night .dicon__label { color: #fff; text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6); }
+/* окно «Кейсы»: папки в ряд на белом, поэтому подписи всегда тёмные, и днём и ночью */
+.win--cases { right: 0; top: 24px; width: 640px; }
+.cases { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 22px 14px 14px; background: #fff; }
+.cases .dicon { --folder-w: 150px; width: auto; }
+.theme-soft .cases .dicon__label { color: var(--ink); text-shadow: none; }
+
+.theme-soft .jobs { background: var(--soft-bg); }
+.theme-soft .job { border-bottom-color: var(--line); }
+.theme-soft .job__period { color: var(--muted); font: 12px var(--mono); }
+.theme-soft .job__company { color: var(--ink); font: 600 16px var(--title-font); }
+
+/* панель задач — светлая; вместо «пуск» — аватар и имя */
+.theme-soft .taskbar { gap: 8px; padding: 7px 10px; border-top: 1px solid rgba(0, 0, 0, 0.08); background: var(--soft-bg); color: var(--ink); }
+.theme-soft .start { gap: 8px; padding: 0 12px 0 4px; border-radius: 8px; background: none; box-shadow: none; color: var(--ink); font: 600 14px var(--ui-font); text-shadow: none; }
+.theme-soft .start:hover, .theme-soft .start[aria-expanded='true'] { background: #ececef; filter: none; }
+.theme-soft .flag, .theme-soft .start__label { display: none; }
+.start__ava { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+.theme-soft .tasks { padding: 0 8px; border-left: 1px solid var(--line); }
+.theme-soft .task { height: 34px; border: 0; border-radius: 8px; background: none; box-shadow: none; color: #55555a; font: 500 14px var(--ui-font); }
+.theme-soft .task:hover { background: #f0f0f2; }
+.theme-soft .task.is-active { background: #e9e9ee; box-shadow: none; color: var(--ink); }
+.theme-soft .tray { gap: 6px; padding: 0 4px; border: 0; background: none; box-shadow: none; color: #55555a; }
+.theme-soft .tray a, .theme-soft .tray button { width: 32px; height: 32px; border-radius: 8px; color: #55555a; }
+.theme-soft .tray a:hover, .theme-soft .tray button:hover { background: #ececef; }
+.theme-soft .tray__lang { border-color: #cfcfd4; font: 12px var(--mono); }
+.theme-soft .tray__time { padding-left: 6px; color: var(--ink); font: 12px var(--mono); }
+
+.theme-soft .startmenu { left: 10px; bottom: calc(var(--tb-h) + 8px); width: 380px; border: 0; border-radius: 12px; background: var(--soft-bg); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 18px 50px rgba(0, 0, 0, 0.22); }
+.theme-soft .startmenu__head { padding: 14px; border-bottom: 1px solid var(--line); background: none; color: var(--ink); font: 600 14px var(--ui-font); text-shadow: none; }
+.theme-soft .startmenu__head img { width: 40px; height: 40px; border: 0; border-radius: 50%; }
+.theme-soft .startmenu__cols { border-top: 0; }
+.theme-soft .startmenu__col--right { border-left: 1px solid var(--line); background: none; }
+.theme-soft .startmenu__item { border-radius: 6px; color: var(--ink); font: 14px var(--ui-font); }
+.theme-soft .startmenu__item b { font-weight: 500; }
+.theme-soft .startmenu__item:hover { background: #efeff2; color: var(--ink); }
+.theme-soft .startmenu__item img { width: 20px; height: 20px; }
+.theme-soft .startmenu__sep { background: var(--line); }
+.theme-soft .startmenu__caption { color: var(--muted); font: 12px var(--mono); letter-spacing: 0.08em; text-transform: uppercase; }
+.theme-soft .startmenu__foot { border-top: 1px solid var(--line); background: none; }
+.theme-soft .startmenu__foot button { color: #55555a; font: 14px var(--ui-font); }
+.theme-soft .startmenu__foot button:hover { background: #ececef; }
+.theme-soft .power { border: 0; background: #ececef; color: #55555a; }
+
+.theme-soft .theme-switch { border-color: var(--line); border-radius: 10px; background: #fff; font-family: var(--ui-font); }
+.theme-soft .theme-switch .btn { min-height: 26px; padding: 2px 10px; font-size: 12px; }
+.theme-soft .theme-switch .btn[aria-pressed='true'] { border-color: var(--ink); background: var(--ink); color: #fff; box-shadow: none; font-weight: 500; }
+
+/* окно кейса: без панели «Назад» и адреса — путь уже в заголовке, закрыть — крестик */
+.theme-soft .win--doc { box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 18px 50px rgba(0, 0, 0, 0.22); }
+.theme-soft .win--doc .win__title { height: 38px; }
+.theme-soft .toolbar { display: none; }
+/* левая панель — дерево файлов: папка кейса раскрыта, разделы лежат в ней файлами */
+.theme-soft .taskpane { width: 240px; padding: 20px 0; border-right: 1px solid var(--line); background: #f0f0ef; }
+.theme-soft .pane__head { display: none; }
+.tree__row { display: flex; align-items: center; gap: 8px; padding: 6px 18px; color: #55555a; font: 14px/1.35 var(--ui-font); text-decoration: none; }
+a.tree__row:hover { background: #e7e7e9; color: var(--ink); }
+.tree__row svg { width: 15px; height: 15px; flex: none; }
+.tree__row--open { color: var(--ink); font-weight: 500; }
+.theme-soft .pane__body { gap: 0; margin: 0 0 4px 25px; border-left: 1px solid #dcdcdf; }
+.theme-soft .pane__body a { display: flex; gap: 8px; padding: 6px 14px 6px 12px; border-left: 0; border-radius: 0; color: #55555a; font: 14px/1.35 var(--ui-font); }
+.theme-soft .pane__body a::before {
+  content: '';
+  flex: none;
+  width: 13px;
+  height: 13px;
+  margin-top: 2px;
+  background: currentColor;
+  opacity: 0.5;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 1.5h6l3.5 3.5v9.5h-9.5z M9.5 1.5V5H13' fill='none' stroke='black' stroke-width='1.3' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 1.5h6l3.5 3.5v9.5h-9.5z M9.5 1.5V5H13' fill='none' stroke='black' stroke-width='1.3' stroke-linejoin='round'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+.theme-soft .pane__body a:hover { background: #e7e7e9; color: var(--ink); }
+/* открытый раздел — тёмная полоска слева, как выбранная заметка */
+.theme-soft .pane__body a.is-current { margin-left: -1px; border-left: 2px solid var(--ink); background: #e7e7e9; color: var(--ink); font-weight: 600; }
+
+.theme-soft .doc { background: var(--soft-bg); }
+.theme-soft .doc .eyebrow { color: var(--accent); font: 500 12px var(--mono); letter-spacing: 0.1em; text-transform: uppercase; }
+.theme-soft .doc h1 { margin-bottom: 14px; color: var(--ink); font: 700 38px/1.15 var(--ui-font); letter-spacing: -0.01em; }
+/* теги над заголовком кейса — серые, на рабочем столе остаются синими */
+.doc .tags { margin: 0 0 16px; }
+.doc .tag { background: #ededef; color: #55555a; }
+.theme-soft .doc h2 { color: var(--ink); font: 600 26px/1.25 var(--ui-font); letter-spacing: -0.005em; }
+.theme-soft .doc h3 { font: 600 16px/1.3 var(--title-font); }
+.theme-soft .doc a:not(.btn) { color: var(--accent); }
+.theme-soft .shot { padding: 0; border: 1px solid var(--line); border-radius: 12px; background: #f4f4f4; overflow: hidden; }
+/* аудит — холст Figma: светлый фон в точку, экраны как фреймы, замечания — комментарии с меткой-аватаром */
+.theme-soft .audit {
+  padding: 0 0 28px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  background: radial-gradient(circle, #d2d2d7 1px, transparent 1.3px) 0 0 / 18px 18px, #f3f3f1;
+}
+/* строка с именем вложенного файла — у аудита, доски исследования и таблицы интервью */
+.file__bar { display: flex; align-items: center; gap: 8px; height: 38px; padding: 0 14px; border-bottom: 1px solid var(--line); background: var(--soft-bar); color: var(--muted); font: 500 14px var(--ui-font); }
+.file__bar svg { width: 15px; height: 15px; flex: none; }
+.file__bar b { color: var(--ink); font-weight: 500; }
+.file__count { margin-left: auto; font: 12px var(--mono); }
+/* вложенный файл на холсте в точку; внизу — кнопки, которые открывают сам файл в Figma */
+.theme-soft .shot.file { overflow: hidden; background: radial-gradient(circle, #d2d2d7 1px, transparent 1.3px) 0 0 / 18px 18px, #f3f3f1; }
+.file__actions { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 22px 20px; }
+/* кнопка в левом нижнем углу холста, поверх него, с одинаковыми отступами от краёв */
+.theme-soft .shot.file:has(.file__actions--corner) { position: relative; }
+.file__actions--corner { position: absolute; left: 20px; bottom: 20px; padding: 0; }
+.theme-soft .file__actions .btn { min-height: 34px; font-size: 14px; }
+
+/* коллаж: несколько крупных артефактов чуть внахлёст и под наклоном — видно главное, детали в Figma.
+   Координаты — в процентах от холста, на телефоне элементы встают в поток */
+/* высота холста растёт вместе с шириной, чтобы раскладка в процентах не ломалась на широком окне */
+.collage { position: relative; aspect-ratio: 708 / 440; margin: 0 22px; }
+.doc .collage > * { position: absolute; margin: 0; }
+.cl-phone { width: 19%; rotate: var(--r, 0deg); filter: drop-shadow(0 14px 22px rgba(20, 30, 70, 0.22)); }
+.cl-phone img { display: block; width: 100%; }
+.cl-tag { position: absolute; top: -11px; left: 10px; z-index: 1; padding: 2px 9px; border-radius: 6px; background: var(--ink); color: #fff; font: 12px/1.5 var(--mono); }
+/* стикеры — как в Figma: голубые с подписью автора, негативные наблюдения — розовые */
+.doc .cl-sticky { display: flex; flex-direction: column; justify-content: space-between; gap: 14px; width: 150px; min-height: 118px; padding: 12px 13px 10px; background: #d7f5fb; box-shadow: 0 6px 14px rgba(20, 30, 70, 0.14); color: var(--ink); font: 14px/1.35 var(--ui-font); rotate: var(--r, 0deg); }
+.doc .cl-sticky--pink { background: #ffd9d9; }
+.cl-sticky small { color: #8a8a8e; font-size: 12px; }
+.cl-card { padding: 16px 18px 14px; border-radius: 12px; background: #fff; box-shadow: 0 10px 26px rgba(20, 30, 70, 0.14); rotate: var(--r, 0deg); }
+.doc .cl-card__title { margin: 0 0 8px; font: 600 16px/1.3 var(--ui-font); }
+.doc .cl-card ol { margin: 0; padding-left: 20px; font: 14px/1.45 var(--doc-font); }
+.doc .cl-card li { margin-bottom: 4px; }
+/* исследование: мокапы внахлёст, стикеры кучкой заходят на них снизу */
+.collage--research { aspect-ratio: 708 / 420; }
+.collage--research .cl-phone { width: 16.5%; }
+.cl-phone--r1 { --r: -3deg; left: 1%; top: 7%; z-index: 1; }
+.cl-phone--r2 { --r: 1deg; left: 13%; top: 5%; z-index: 2; }
+.cl-phone--r3 { --r: 4deg; left: 25.5%; top: 7%; z-index: 3; }
+.cl-sticky--r1 { --r: -5deg; left: 2%; top: 60%; z-index: 4; }
+.cl-sticky--r2 { --r: 4deg; left: 15.5%; top: 66%; z-index: 5; }
+.cl-sticky--r3 { --r: -3deg; left: 32.5%; top: 58%; z-index: 4; }
+.cl-sticky--r4 { --r: 5deg; left: 49.5%; top: 71%; z-index: 5; }
+.doc .cl-sticky:has(.cl-sign) { justify-content: flex-start; gap: 6px; width: 156px; }
+.cl-sign { font: 600 20px/1 var(--title-font); }
+.cl-sticky:has(.cl-sign) small { margin-top: auto; padding-top: 6px; }
+.cl-card--r { --r: 1.5deg; right: 0; top: 6%; width: 37%; }
+
+/* интервью: цитаты — белые карточки с меткой респондента, результаты — на стикерах */
+.collage--interview { aspect-ratio: 708 / 340; }
+.cl-quote { display: flex; gap: 12px; padding: 18px 20px; border-radius: 12px; background: #fff; box-shadow: 0 10px 26px rgba(20, 30, 70, 0.14); rotate: var(--r, 0deg); }
+.doc .cl-quote p { margin: 0; font: 14px/1.45 var(--doc-font); }
+.cl-avatar { flex: none; display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--accent-bg); color: var(--accent); font: 600 12px var(--ui-font); }
+/* стикер-результат: крупная цифра «N из 5» и короткая подпись */
+.doc .cl-sticky--stat { justify-content: flex-start; gap: 6px; width: 168px; min-height: 150px; padding: 14px 15px; font-size: 14px; }
+.cl-sticky--stat b { font: 600 30px/1 var(--title-font); }
+/* цитаты и стикеры собраны плотнее: нижняя цитата и стикеры уголком заходят на соседей */
+.cl-quote--i1 { --r: -1.5deg; left: 2%; top: 13%; width: 46%; }
+.cl-quote--i2 { --r: 1.5deg; left: 10%; top: 45%; width: 40%; z-index: 1; }
+.cl-sticky--i1 { --r: -3deg; left: 54%; top: 8%; }
+.cl-sticky--i2 { --r: 3deg; left: 74%; top: 17%; z-index: 1; }
+.cl-sticky--i3 { --r: -1.5deg; left: 62%; top: 50%; z-index: 2; }
+
+@media (max-width: 760px) {
+  .collage, .collage--interview { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px 12px; height: auto; aspect-ratio: auto; padding: 18px 0 22px; }
+  .doc .collage > * { position: static; }
+  .file__actions--corner { position: static; justify-content: center; padding: 0 22px 20px; }
+  .cl-phone { width: 30%; }
+  .cl-card, .cl-quote { width: 100%; }
+  .doc .cl-sticky { width: calc(50% - 6px); }
+}
+.theme-soft .audit__head { margin-bottom: 56px; padding: 22px 24px 0; }
+/* снизу запас: комментарии у нижних экранов выше балунов XP из-за строки с именем */
+.theme-soft .audit__stage { margin: 8px 3% 64px; }
+.theme-soft .audit__head h2 { margin: 0; color: var(--ink); font-size: 22px; }
+.theme-soft .audit__phone { border-radius: 14px; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.18); }
+.theme-soft .audit__note { gap: 6px; padding: 0; border: 0; border-radius: 0; background: none; box-shadow: none; color: var(--ink); font: 14px/1.4 var(--ui-font); }
+/* метка комментария: круг с острым углом слева снизу, как в Figma */
+.theme-soft .audit__avatar { width: 28px; height: 28px; border: 2px solid #fff; border-radius: 50% 50% 50% 0; background: var(--accent); box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2); font: 600 12px var(--ui-font); }
+.theme-soft .audit__note p { padding: 8px 12px 9px; border-radius: 4px 12px 12px 12px; background: #fff; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.14); }
+.theme-soft .audit__note p::before { content: 'Софья'; display: block; margin-bottom: 2px; color: var(--ink); font-weight: 600; font-size: 12px; }
+.theme-soft .problem, .theme-soft .doc__nav { border-top-color: var(--line); }
+/* гипотезы — листки из блокнота на пружине: белый лист с прорезями сверху, под ним повёрнутый цветной лист,
+   в прорезях виден его цвет. Номер — внизу справа: «гипотеза 01» */
+.theme-soft .tips { isolation: isolate; gap: 40px 34px; margin: 30px 0 18px; padding: 0 10px; }
+.theme-soft .tip, .theme-soft .tip:nth-child(even), .theme-soft .tip:nth-child(3n) {
+  --back: var(--accent);
+  display: flex;
+  flex-direction: column;
+  padding: 40px 22px 18px;
+  border: 0;
+  border-radius: 0;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  color: var(--ink);
+  font: 14px/1.5 var(--doc-font);
+  rotate: none;
+}
+.theme-soft .tip:nth-child(even) { --back: #2a2a2c; }
+/* одинокая гипотеза (проблема 3) — без цветного листа снизу, прорези просто серые */
+.theme-soft .tip:only-child { --back: #dcdce0; }
+.theme-soft .tip:only-child::after { display: none; }
+/* прорези пружины: круглые дырочки с перемычкой до верхнего края */
+.theme-soft .tip::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 14px;
+  right: 14px;
+  height: 22px;
+  background:
+    radial-gradient(circle at 12px 11px, var(--back) 0 7px, transparent 7.5px) 0 0 / 30px 22px repeat-x,
+    linear-gradient(90deg, transparent 9px, var(--back) 9px 15px, transparent 15px) 0 0 / 30px 10px repeat-x;
+}
+/* цветной лист под белым — крупнее и повёрнут, выглядывает слева и снизу */
+.theme-soft .tip::after {
+  content: '';
+  position: absolute;
+  inset: -4px 8px -16px -14px;
+  z-index: -1;
+  background: var(--back);
+  rotate: -5deg;
+  transition: rotate 0.25s ease;
+}
+.theme-soft .tip:nth-child(even)::after { inset: 10px -16px -14px 8px; rotate: 4.5deg; }
+.theme-soft .tip:hover { rotate: none; translate: none; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1); }
+.theme-soft .tip:hover::after { rotate: -8deg; }
+.theme-soft .tip:nth-child(even):hover::after { rotate: 7.5deg; }
+.theme-soft .tip strong {
+  order: 2;
+  display: flex;
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: 6px;
+  margin: auto 0 0;
+  padding: 18px 0 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: 400 14px var(--ui-font);
+  text-transform: lowercase;
+}
+.theme-soft .tip__n { font: normal 700 28px/1 var(--ui-font); }
+.theme-soft .tip__n::before { content: '0'; }
+
+/* вариант для сравнения (проблема 2): гипотезы — жёлтые бумажки-стикеры с загнутым уголком */
+.theme-soft .tips.tips--paper .tip {
+  padding: 18px 20px 26px;
+  background: linear-gradient(170deg, #fff4c2 0%, #fbe9a0 100%);
+  box-shadow: 0 1px 1px rgba(120, 90, 0, 0.08), 0 10px 18px -8px rgba(80, 60, 0, 0.28);
+  rotate: var(--r, -1deg);
+}
+.theme-soft .tips.tips--paper .tip:nth-child(2) { --r: 1.2deg; }
+.theme-soft .tips.tips--paper .tip:nth-child(3) { --r: 0.6deg; }
+.theme-soft .tips.tips--paper .tip:nth-child(4) { --r: -1.6deg; }
+.theme-soft .tips.tips--paper .tip::before { display: none; }
+/* загнутый уголок: снизу справа видна изнанка листа, под ней — тень */
+.theme-soft .tips.tips--paper .tip::after,
+.theme-soft .tips.tips--paper .tip:hover::after {
+  inset: auto 0 0 auto;
+  z-index: 1;
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(315deg, var(--soft-bg) 0 50%, #e8cf70 50%, #fff1b5 100%);
+  box-shadow: -3px -3px 5px rgba(80, 60, 0, 0.12);
+  rotate: none;
+}
+.theme-soft .tips.tips--paper .tip:hover { translate: none; box-shadow: 0 1px 1px rgba(120, 90, 0, 0.08), 0 14px 22px -8px rgba(80, 60, 0, 0.32); }
+.theme-soft .tips.tips--paper .tip strong { order: 0; justify-content: flex-start; margin: 0 0 8px; padding: 0; color: #8a6a00; font: 600 13px var(--ui-font); text-transform: none; }
+.theme-soft .tips.tips--paper .tip__n { font: inherit; }
+.theme-soft .tips.tips--paper .tip__n::before { content: none; }
+
+/* вариант для сравнения (проблема 4): карточки на кнопках — белая рамка, внутри пастельная плашка,
+   сверху глянцевая булавка; номер, «Гипотеза» и текст */
+.theme-soft .tips.tips--pinned { gap: 46px 30px; margin-top: 40px; }
+/* белая рамка — это бордер, пастельная плашка — фон внутри него */
+.theme-soft .tips.tips--pinned .tip {
+  --pin: #f0743a; --tint: #fff1e7; --num: #e0662c;
+  padding: 22px 20px 22px;
+  border: 10px solid #fff;
+  border-radius: 20px;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--tint), #fff 45%) 0%, var(--tint) 100%) padding-box;
+  box-shadow: 0 1px 2px rgba(20, 30, 70, 0.06), 0 18px 36px -10px rgba(20, 30, 70, 0.18);
+  color: #55555a;
+  font-size: 14.5px;
+  rotate: var(--r, -3deg);
+}
+.theme-soft .tips.tips--pinned .tip:nth-child(even) { --pin: #3b5bdb; --tint: #ebefff; --num: #3b5bdb; --r: 3deg; margin-top: 34px; }
+.theme-soft .tips.tips--pinned .tip:nth-child(3n) { --pin: #8a4fe0; --tint: #f3eaff; --num: #8a4fe0; }
+/* булавка: глянцевый шарик с бликом и тенью, наполовину над краем карточки */
+.theme-soft .tips.tips--pinned .tip::before {
+  top: -22px;
+  left: calc(50% - 13px);
+  right: auto;
+  z-index: 2;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 34% 30%, #fff 0 9%, var(--pin) 38%, color-mix(in srgb, var(--pin), #000 35%) 100%);
+  box-shadow: 0 6px 8px rgba(20, 30, 70, 0.28);
+}
+.theme-soft .tips.tips--pinned .tip::after { display: none; }
+.theme-soft .tips.tips--pinned .tip:hover { translate: 0 -3px; box-shadow: 0 1px 2px rgba(20, 30, 70, 0.06), 0 24px 40px -10px rgba(20, 30, 70, 0.22); }
+.theme-soft .tips.tips--pinned .tip strong { order: 0; flex-direction: column-reverse; align-items: flex-start; gap: 6px; margin: 0 0 8px; padding: 0; color: var(--ink); font: 600 19px/1.2 var(--ui-font); text-transform: none; }
+.theme-soft .tips.tips--pinned .tip__n { color: var(--num); font: 400 18px/1 var(--mono); }
+
+/* вариант для сравнения (проблема 1): белая карточка с крупным скруглением, как карточка дня в календаре:
+   сверху «Гипотеза 1», под ним точечный разделитель, ниже текст. Карточки — столбиком */
+.theme-soft .tips.tips--card { grid-template-columns: 1fr; gap: 12px; margin: 0; padding: 0; }
+.theme-soft .tips.tips--card .tip {
+  /* сверху отступ на 3 px меньше боковых: столько занимает запас строки над буквами — визуально одинаково */
+  padding: 21px 24px 24px;
+  border: 0;
+  border-radius: 14px; /* как у окон, холстов и слайдов на сайте */
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(20, 30, 70, 0.05), 0 14px 32px -14px rgba(20, 30, 70, 0.22);
+  color: var(--ink);
+  font: 16px/1.5 var(--doc-font);
+  rotate: none;
+}
+.theme-soft .tips.tips--card .tip::before, .theme-soft .tips.tips--card .tip::after { display: none; }
+.theme-soft .tips.tips--card .tip:hover { translate: 0 -2px; box-shadow: 0 1px 2px rgba(20, 30, 70, 0.05), 0 18px 36px -14px rgba(20, 30, 70, 0.26); }
+/* «Гипотеза 1»: слово и цифра одного размера; точки — нижней границей заголовка */
+.theme-soft .tips.tips--card .tip strong {
+  order: 0;
+  justify-content: flex-start;
+  align-items: baseline;
+  gap: 0.3em;
+  margin: 0 0 10px;
+  padding: 0 0 12px;
+  background: radial-gradient(circle, #d4d4d8 1.2px, transparent 1.7px) 0 100% / 6px 4px repeat-x;
+  color: var(--ink);
+  font: 600 19px/1.15 var(--ui-font);
+  text-transform: none;
+}
+.theme-soft .tips.tips--card .tip__n { font: inherit; }
+.theme-soft .tips.tips--card .tip__n::before { content: none; }
+/* проблемы на две колонки: слева «Проблема N», заголовок и описание, справа столбик карточек-гипотез */
+/* четвёртая строка 1fr забирает лишнюю высоту столбика карточек, чтобы слева строки не раздвигались */
+.theme-soft .problem > .doc__text { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto auto 1fr; column-gap: 48px; align-items: start; max-width: none; }
+.theme-soft .problem > .doc__text > :not(.tips) { grid-column: 1; }
+.theme-soft .problem > .doc__text > .tips { grid-column: 2; grid-row: 1 / span 4; }
+@media (max-width: 760px) {
+  .theme-soft .problem > .doc__text { grid-template-columns: 1fr; }
+  .theme-soft .problem > .doc__text > .tips { grid-column: 1; grid-row: auto; margin-top: 20px; }
+}
+/* решения проблем — композиция слайдов из Figma: всё расставлено по координатам слайда шириной 1320 px.
+   --W/--H — размер слайда, у элементов --x/--y/--w (и --h у векторов) в пикселях слайда;
+   шрифт тоже в пикселях слайда (--fs) и масштабируется вместе с шириной блока */
+.comp {
+  --solution-bg: #ededef;
+  position: relative;
+  margin: 26px 0;
+  aspect-ratio: var(--W) / var(--H);
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--solution-bg);
+  container-type: inline-size;
+}
+.doc .comp > * { position: absolute; left: calc(var(--x) / var(--W) * 100%); top: calc(var(--y) / var(--H) * 100%); width: calc(var(--w) / var(--W) * 100%); margin: 0; }
+.comp__phone { display: block; filter: drop-shadow(0 calc(16 / 1320 * 100cqw) calc(20 / 1320 * 100cqw) rgba(20, 30, 70, 0.24)); }
+.comp__card { display: block; border-radius: calc(14 / 1320 * 100cqw); box-shadow: 0 calc(14 / 1320 * 100cqw) calc(28 / 1320 * 100cqw) rgba(20, 30, 70, 0.3); }
+.comp__card--banner { z-index: 1; border-radius: calc(10 / 1320 * 100cqw); }
+.doc .comp__t { color: var(--ink); font: calc(var(--fs) / 1320 * 100cqw) / 1.2 var(--doc-font); }
+.doc .comp__t--note { color: #55555a; }
+.doc .comp__t--lead2 { color: #55555a; line-height: 1.15; }
+/* заголовок слайда — тем же шрифтом, что заголовки кейса */
+.doc .comp__t--title { font-family: var(--head-font); font-weight: 600; letter-spacing: -0.02em; }
+.doc .comp__t--step { font-family: var(--head-font); font-weight: 600; line-height: 1.1; }
+.doc .comp > .comp__svg { height: calc(var(--h) / var(--H) * 100%); overflow: visible; color: #8a8a8e; fill: currentColor; }
+.comp__svg--hand { color: #77777c; }
+/* на телефоне слайд не ужимается до нечитаемого: держим ширину и листаем вбок */
+.comp-scroll { margin: 26px 0; }
+.comp-scroll > .comp { margin: 0; }
+@media (max-width: 760px) {
+  .comp-scroll { overflow-x: auto; margin: 22px -18px; padding: 0 18px; scrollbar-width: thin; }
+  .comp-scroll > .comp { width: 680px; }
+}
+/* кнопки: строчные буквы сидят в строке ниже центра, поэтому снизу на 2 px больше отступа, чем сверху */
+.theme-soft .btn { padding-top: 5px; padding-bottom: 7px; }
+.theme-soft .btn--wide, .theme-soft .clip-bubble__btn { padding-top: 3px; padding-bottom: 5px; }
+.theme-soft .clip-pie__item { padding-top: 0; padding-bottom: 2px; }
+/* вводная цитата под заголовком кейса: синяя черта слева, текст на ступень крупнее основного */
+.theme-soft .doc .doc__quote { max-width: 720px; margin: 28px 0 32px; padding: 2px 0 2px 20px; border-left: 3px solid var(--accent); font: 18px/1.5 var(--doc-font); }
+.theme-soft .doc, .theme-soft .jobs, .theme-soft .taskpane { scrollbar-width: thin; scrollbar-color: #c8c8cc transparent; }
+/* типографика: три семейства. Заголовки — IBM Plex Sans 600 (H1 48, H2 32, H3 18), текст — PT Sans 16 и 14,
+   служебные подписи — PT Mono 12 */
+.theme-soft { --head-font: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif; }
+.theme-soft .doc h1 { margin-bottom: 32px; font: 600 48px/1.15 var(--head-font); letter-spacing: -0.02em; }
+.theme-soft .doc h2 { margin-bottom: 48px; font: 600 32px/1.25 var(--head-font); letter-spacing: -0.01em; }
+.theme-soft .doc .audit__head h2 { margin-bottom: 0; }
+/* H3: подписи групп и «Контекста» — крупнее текста, чтобы подзаголовок не сливался с абзацем под ним */
+.theme-soft .doc { font: 16px/1.55 var(--doc-font); }
+.theme-soft .doc .group > legend, .theme-soft .doc .facts dt { margin-bottom: 10px; font: 600 18px/1.3 var(--head-font); letter-spacing: 0; }
+/* заголовок карточки в коллаже и «Гипотеза N» на булавках — на ступень меньше */
+.theme-soft .doc .cl-card__title, .theme-soft .doc .tips.tips--pinned .tip strong { font: 600 16px/1.3 var(--head-font); letter-spacing: 0; }
+/* блоки проблем: «Проблема N» — серым PT Sans без капслока, заголовок — IBM Plex Sans SemiBold,
+   описание и гипотезы — PT Sans 16, «Гипотеза N» в карточках — PT Sans 16 жирным */
+/* без тонкой линии над проблемой; от предыдущего блока — 120 px (отступ схлопывается с нижним отступом
+   картинки или слайда над ним, поэтому расстояние одинаковое перед всеми проблемами) */
+.theme-soft .problem { margin-top: 120px; padding-top: 0; border-top: 0; }
+/* от гипотез до первого слайда «Решение» — 56 px во всех проблемах (у гипотез свой нижний отступ убираем) */
+.theme-soft .problem > .doc__text > .tips { margin-bottom: 0; }
+.theme-soft .problem > .comp-scroll:not(.comp-scroll ~ .comp-scroll) { margin-top: 56px; }
+.theme-soft .doc .problem .eyebrow { margin: 0 0 6px; color: #8a8a8e; font: 400 16px/1.4 var(--doc-font); letter-spacing: 0; text-transform: none; }
+.theme-soft .doc .problem__list { font: 16px/1.55 var(--doc-font); }
+/* карточки — абзацы: убираем нижний отступ абзаца, иначе он добавляется к промежутку между карточками */
+.theme-soft .doc .tips.tips--card .tip { margin: 0; font: 14px/1.5 var(--doc-font); }
+.theme-soft .doc .tips.tips--card .tip strong { font: 700 14px/1.3 var(--doc-font); letter-spacing: 0; }
+/* точечный разделитель перед крупными разделами — во всю ширину листа (раздел уже листа, поэтому ширина от .doc__inner) */
+.theme-soft .doc__inner { container-type: inline-size; }
+.theme-soft .sec-sep::before {
+  content: '';
+  display: block;
+  width: 100cqw;
+  height: 4px;
+  /* видимые расстояния одинаковые, по 101 px: сверху 79 + 22 отступа предыдущего блока,
+     снизу 90 + ~11 px от верха строки заголовка до верха заглавных букв */
+  margin: 79px 0 90px;
+  background: radial-gradient(circle, #cdcdd2 1.5px, transparent 2px) 0 50% / 8px 4px repeat-x;
+}
+.theme-soft .sec-sep > h2:first-child { margin-top: 0; }
+/* раздел без заголовка (Контекст в Яндексе): от точек до подзаголовка те же 101 px */
+.theme-soft .sec-sep:not(:has(> h2))::before { margin-bottom: 96px; }
+/* описательные разделы — на две колонки на всю ширину листа: заголовок сверху,
+   группы встают рядом, одиночный абзац — в левую колонку */
+.theme-soft .doc__text.sec-cols { display: grid; grid-template-columns: 1fr 1fr; column-gap: 48px; align-items: start; max-width: none; }
+.theme-soft .doc__text.sec-cols > :is(h2, .facts),
+.theme-soft .doc__text.sec-cols::before { grid-column: 1 / -1; }
+.theme-soft .doc__text.sec-cols > :is(p, ul) { margin-bottom: 0; }
+@media (max-width: 760px) {
+  .theme-soft .doc__text.sec-cols, .theme-soft .facts { grid-template-columns: 1fr; }
+}
+/* картинка внутри вложенного файла: белая доска на холсте в точку; __grid — несколько экранов сеткой */
+.theme-soft .shot.file > .file__img { display: block; width: calc(100% - 44px); margin: 22px; border-radius: 10px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12); }
+.file__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 22px; }
+.file__grid img { display: block; width: 100%; border-radius: 10px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12); }
+/* одна гипотеза — шириной с текстовую колонку */
+.theme-soft .doc__text .tips.tips--solo { grid-column: 1; margin-top: 8px; }
+/* раздел без точечного разделителя: 80 px от предыдущего блока (отступы схлопываются, поэтому после любого блока одинаково) */
+.theme-soft .doc__text.sec-gap { margin-top: 80px; }
+.theme-soft .sec-gap > h2:first-child { margin-top: 0; }
+/* от текста раздела до серой подложки или вложенного файла — 56 px, как от гипотез до слайда в проблемах */
+.theme-soft .doc__text.sec-cols > .group:nth-last-child(-n+2) { margin-bottom: 0; }
+.theme-soft .doc .doc__text + :is(.shot, .audit, .comp-scroll, .features, .landing) { margin-top: 56px; }
+/* раздел из одного заголовка: подложка ближе, она продолжает заголовок */
+.theme-soft .doc .doc__text > h2:last-child { margin-bottom: 0; }
+.theme-soft .doc .doc__text:has(> h2:last-child) + :is(.shot, .features, .landing) { margin-top: 70px; }
+
+/* результат (Яндекс 360): слайды с экранами и подписями на серой подложке; координаты — в процентах слайда 1200 × 757 */
+.features { margin: 8px 0 0; }
+/* слайды наезжают друг на друга при прокрутке: каждый прилипает к верху окна чуть ниже предыдущего.
+   Если слайд не влезает в окно по высоте, прилипает по нижнему краю, чтобы его было видно целиком */
+.feature { --i: 0; position: sticky; top: min(16px + var(--i) * 8px, 100% - 63.09cqw - 16px); aspect-ratio: 1200 / 757; overflow: hidden; border-radius: 14px; background: #2f2f33; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 -8px 20px -14px rgba(0, 0, 0, 0.45); scale: calc(1 - var(--cover, 0) * 0.04); transform-origin: 50% 0; container-type: inline-size; }
+/* слайд, на который наезжает следующий, темнеет и чуть уменьшается: --cover считает retro.js, от 0 до 1 */
+.feature::after { content: ''; position: absolute; inset: 0; z-index: 1; background: #000; opacity: calc(var(--cover, 0) * 0.6); pointer-events: none; }
+.feature + .feature { margin-top: 26px; }
+.feature:nth-child(2) { --i: 1; }
+.feature:nth-child(3) { --i: 2; }
+.feature:nth-child(4) { --i: 3; }
+.feature:nth-child(5) { --i: 4; }
+.feature:nth-child(6) { --i: 5; }
+.feature:nth-child(7) { --i: 6; }
+.feature:nth-child(8) { --i: 7; }
+.doc .feature .fx { position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%); width: calc(var(--w) * 1%); margin: 0; transform: rotate(var(--r, 0deg)); }
+.feature img.fx, .feature svg.fx { display: block; height: auto; }
+.doc .feature .fx-title { color: #fff; font: 600 3.6cqw / var(--lh, 1.56) var(--head-font); letter-spacing: -0.02em; white-space: nowrap; }
+.doc .feature .fx-lead { color: #d9d9dc; font: 2.2cqw / 1.36 var(--doc-font); }
+.doc .feature .fx-note, .doc .feature .fx-small { color: #bfbfbf; font: 1.65cqw / 1.35 var(--doc-font); }
+
+/* лендинг конференции: слева сплошная лента экранов, справа подписи и мобильные версии на уровне своих блоков */
+.landing { display: grid; grid-template-columns: 1fr 220px; gap: 32px; margin: 26px 0 0; padding: 32px; border-radius: 14px; background: #ededef; }
+.landing__images img { display: block; width: 100%; }
+.landing__notes { position: relative; }
+.doc .landing__notes > * { position: absolute; left: 0; right: 0; margin: 0; }
+.doc .landing__notes > *:not(:first-child):not(:last-child) { transform: translateY(-50%); }
+.doc .landing__notes > *:first-child { top: 0; }
+.doc .landing__notes > *:nth-child(2) { top: 7.69%; }
+.doc .landing__notes > *:nth-child(3) { top: 15.24%; }
+.doc .landing__notes > *:nth-child(4) { top: 30.66%; }
+.doc .landing__notes > *:nth-child(5) { top: 35.28%; }
+.doc .landing__notes > *:nth-child(6) { top: 47.52%; }
+.doc .landing__notes > *:nth-child(7) { top: 53%; }
+.doc .landing__notes > *:nth-child(8) { top: 60.65%; }
+.doc .landing__notes > *:nth-child(9) { top: 73.62%; }
+.doc .landing__notes > *:last-child { top: auto; bottom: 0; }
+.doc .landing__notes p { color: var(--ink); font: 14px/1.4 var(--doc-font); }
+.landing__mobile { width: 100%; max-width: 180px; border-radius: 14px; }
+.landing__end { display: flex; flex-direction: column; gap: 20px; }
+@media (max-width: 760px) {
+  .feature { position: relative; top: auto; aspect-ratio: auto; display: flex; flex-direction: column; gap: 14px; padding: 22px 18px; }
+  .doc .feature .fx { position: static; width: auto; transform: none; }
+  .feature img.fx--deco, .feature svg.fx--deco, .doc .feature .fx-note { display: none; }
+  .doc .feature .fx-title { font-size: 24px; line-height: 1.2; white-space: normal; }
+  .doc .feature .fx-lead { font-size: 16px; }
+  .doc .feature .fx-small { font-size: 14px; }
+  .file__grid { grid-template-columns: 1fr; }
+  .landing { grid-template-columns: 1fr; padding: 18px; }
+  .doc .landing__notes { display: flex; flex-wrap: wrap; gap: 16px; }
+  .doc .landing__notes > * { position: static; transform: none !important; }
+}
+
+/* ---------- узкие экраны ---------- */
+@media (max-width: 1100px) {
+  .desk__icons { overflow: auto; padding: 16px 0 24px; }
+  .win--about { position: relative; left: auto; top: auto; width: min(400px, 100%); margin: 0 auto 24px; }
+  .theme-soft .win--about { width: min(400px, 100%); }
+  .dicon { display: inline-flex; vertical-align: top; }
+  .win--cases { position: relative; left: auto; top: auto; width: min(640px, 100%); margin: 0 auto 24px; }
+  .cases { display: flex; flex-wrap: wrap; justify-content: center; }
+  .desk__grid { text-align: center; }
+  .win--jobs { left: 50%; transform: translateX(-50%); width: min(560px, calc(100vw - 24px)); }
+  .win--doc { left: 12px; width: calc(100vw - 24px); top: 10px; }
+}
+@media (max-width: 760px) {
+  .taskpane { display: none; }
+  .doc__inner { padding: 24px 18px 40px; }
+  .doc h1, .theme-soft .doc h1 { font-size: 32px; }
+  .doc h2, .theme-soft .doc h2 { font-size: 26px; }
+  .audit__note { position: static; width: auto; margin-top: 8px; }
+  .audit__stage { aspect-ratio: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .audit__phone { position: static; width: 100%; }
+  .win--doc { left: 0; right: 0; width: auto; top: 0; bottom: var(--tb-h); border-radius: 0; }
+  .start span.start__label { display: none; }
+  .tray__lang { display: none; }
+  .theme-switch { top: auto; bottom: calc(var(--tb-h) + 8px); }
+}
