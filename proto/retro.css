@@ -736,6 +736,9 @@ body:not(.theme-soft) .soft-only { display: none !important; }
 .theme-soft .contact__ico { display: none; }
 .contact__mini { width: 15px; height: 15px; flex: none; margin-right: 6px; }
 .contact__mini--after { margin: 0 0 0 6px; }
+/* значки Telegram и Dribbble на тон светлее подписи, при наведении темнеют вместе с ней */
+.theme-soft .contact__mini:not(.contact__mini--after) { color: #77777c; transition: color 0.15s ease; }
+.theme-soft .contact:hover .contact__mini:not(.contact__mini--after), .theme-soft .contact:focus-visible .contact__mini:not(.contact__mini--after) { color: inherit; }
 /* после соцсетей — значок «открыть во внешнем окне»: квадрат со стрелкой наружу, светлее текста */
 .theme-soft a.contact::after {
   content: '';
